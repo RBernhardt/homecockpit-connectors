@@ -12,6 +12,13 @@ dependencies {
     testCompile "org.testng:testng:6.8"
 }
 
+jar {
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    include('com/esotericsoftware/**', 'moo/**', 'org/objectweb/**', 'org/objenesis/**', 'de/newsarea/**')
+}
+
 uploadArchives {
     repositories {
         mavenDeployer {

@@ -41,11 +41,11 @@ public class InboundAirplaneInitEventHandler extends AbstractFSUIPCEventHandler 
         // altitude
         offsetItems.add(new OffsetItem(0x0570, 8, ByteArray.create(FSUIPCUtil.toFSUIPCAlititude(airplanePosition.getAltitude()), 8)));
         // pitch
-        offsetItems.add(new OffsetItem(0x0578, 4, ByteArray.create(FSUIPCUtil.toFSUIPCDegree(airplanePosition.getPitch()), 4)));
+        offsetItems.add(new OffsetItem(0x0578, 4, ByteArray.create((int)FSUIPCUtil.toFSUIPCDegree(airplanePosition.getPitch()), 4)));
         // bank
-        offsetItems.add(new OffsetItem(0x057C, 4, ByteArray.create(FSUIPCUtil.toFSUIPCDegree(airplanePosition.getBank()), 4)));
+        offsetItems.add(new OffsetItem(0x057C, 4, ByteArray.create((int)FSUIPCUtil.toFSUIPCDegree(airplanePosition.getBank()), 4)));
         // heading
-        offsetItems.add(new OffsetItem(0x0580, 4, ByteArray.create(FSUIPCUtil.toFSUIPCDegree(airplanePosition.getHeading()), 4)));
+        offsetItems.add(new OffsetItem(0x0580, 4, ByteArray.create((int)FSUIPCUtil.toFSUIPCDegree(airplanePosition.getHeading()), 4)));
         //
         try {
             getConnector().write(offsetItems.toArray(new OffsetItem[offsetItems.size()]));
