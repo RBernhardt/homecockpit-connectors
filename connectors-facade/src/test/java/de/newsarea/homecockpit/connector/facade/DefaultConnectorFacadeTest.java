@@ -45,12 +45,12 @@ public class DefaultConnectorFacadeTest {
 
     @Test
     public void shouldReceiveOutboundEvent() throws Exception {
-        final List<ValueChangedEventListener> outboundEventListeners = new ArrayList<>();
+        final List<ConnectorEventHandlerListener> outboundEventListeners = new ArrayList<>();
         ConnectorEventHandler connectorEventHandler = mock(ConnectorEventHandler.class);
         doAnswer(new Answer() {
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {
-                outboundEventListeners.add((ValueChangedEventListener) invocation.getArguments()[0]);
+                outboundEventListeners.add((ConnectorEventHandlerListener) invocation.getArguments()[0]);
                 return null;
             }
         }).when(connectorEventHandler).addConnectorEventHandlerListener(any(ConnectorEventHandlerListener.class));
