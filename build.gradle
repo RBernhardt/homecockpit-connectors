@@ -1,0 +1,39 @@
+subprojects {
+
+    apply plugin: 'java'
+    apply plugin: 'maven'
+    apply plugin: 'idea'
+
+    group = 'de.newsarea.homecockpit'
+    version = '0.9.0-SNAPSHOT'
+
+    sourceCompatibility = 1.7
+    targetCompatibility = 1.7
+
+    test {
+        useTestNG()
+    }
+
+    task javadocJar(type: Jar, dependsOn: javadoc) {
+        classifier = 'javadoc'
+        from 'build/docs/javadoc'
+    }
+
+    task sourcesJar(type: Jar) {
+        from sourceSets.main.allSource
+        classifier = 'sources'
+    }
+
+    artifacts {
+        archives jar
+        archives javadocJar
+        archives sourcesJar
+    }
+
+    repositories {
+        mavenCentral()
+        mavenRepo url: snapshotRepositoryUrl
+    }
+
+}
+

@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<elements handlerPackage="de.newsarea.homecockpit.connector.fsuipc.facade.eventhandler">
+
+  <element name="MAIN">
+    <state component="PAUSE" state="ON" handleEventType="CONNECTOR" eventhandler="ValueEventHandler" offset="0x0264" size="2" value="1" />
+    <state component="PAUSE" state="ON" handleEventType="INBOUND" eventhandler="ValueEventHandler" offset="0x0262" size="2" value="1" />
+    <state component="PAUSE" state="OFF" handleEventType="CONNECTOR" eventhandler="ValueEventHandler" offset="0x0264" size="2" value="0" />
+    <state component="PAUSE" state="OFF" handleEventType="INBOUND" eventhandler="ValueEventHandler" offset="0x0262" size="2" value="0" />
+  </element>
+
+  <element name="AIRPLANE">
+    <state component="LATITUDE" state="VALUE" handleEventType="CONNECTOR" eventhandler="ValueEventHandler" offset="0x0560" size="8" valueConverter="LatitudeConverter" />
+    <state component="LONGITUDE" state="VALUE" handleEventType="CONNECTOR" eventhandler="ValueEventHandler" offset="0x0568" size="8" valueConverter="LongitudeConverter" />
+    <state component="ALTITUDE" state="VALUE" handleEventType="CONNECTOR" eventhandler="ValueEventHandler" offset="0x0570" size="8" valueConverter="AltitudeConverter" />
+    <state component="HEADING" state="VALUE" handleEventType="CONNECTOR" eventhandler="ValueEventHandler" offset="0x0580" size="4" valueConverter="HeadingConverter" />
+    <state component="PITCH" state="VALUE" handleEventType="CONNECTOR" eventhandler="ValueEventHandler" offset="0x0578" size="4" valueConverter="DegreeConverter" />
+    <state component="BANK" state="VALUE" handleEventType="CONNECTOR" eventhandler="ValueEventHandler" offset="0x057C" size="4" valueConverter="DegreeConverter" />
+
+    <state component="IAS" state="VALUE" eventhandler="ValueEventHandler" offset="0x02BC" size="4" valueConverter="Divider128ValueConverter" />
+    <state component="TAS" state="VALUE" eventhandler="ValueEventHandler" offset="0x02B8" size="4" valueConverter="Divider128ValueConverter" />
+
+    <state component="GEAR" state="ON" handleEventType="INBOUND" eventhandler="ValueEventHandler" offset="0x0BE8" size="4" value="16383" />
+    <state component="GEAR" state="OFF" handleEventType="INBOUND" eventhandler="ValueEventHandler" offset="0x0BE8" size="4" value="0" />
+
+    <state component="SPEEDBRAKE" state="ON" handleEventType="INBOUND" eventhandler="ValueEventHandler" offset="0x0BD0" size="4" value="16383" />
+    <state component="SPEEDBRAKE" state="ARMED" handleEventType="INBOUND" eventhandler="ValueEventHandler" offset="0x0BD0" size="4" value="4800" />
+    <state component="SPEEDBRAKE" state="OFF" handleEventType="INBOUND" eventhandler="ValueEventHandler" offset="0x0BD0" size="4" value="0" />
+
+    <state component="FLAPS" state="ON" handleEventType="INBOUND" eventhandler="ValueEventHandler" offset="0x0BDC" size="4" value="16383" />
+    <state component="FLAPS" state="OFF" handleEventType="INBOUND" eventhandler="ValueEventHandler" offset="0x0BDC" size="4" value="0" />
+
+    <state component="INITIALIZATION" state="POSITION" eventhandler="InboundAirplaneInitEventHandler" />
+  </element>
+
+  <element name="CONTROL">
+    <state component="ELEVATOR" state="VALUE" handleEventType="CONNECTOR" eventhandler="ValueEventHandler" offset="0x0BB2" size="2" />
+    <state component="AILERON" state="VALUE" handleEventType="CONNECTOR" eventhandler="ValueEventHandler" offset="0x0BB6" size="2" />
+    <state component="RUDDER" state="VALUE" handleEventType="CONNECTOR" eventhandler="ValueEventHandler" offset="0x0BBA" size="2" />
+  </element>
+
+</elements>

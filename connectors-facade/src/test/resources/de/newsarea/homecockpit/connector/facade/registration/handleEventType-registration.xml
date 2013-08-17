@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<elements handlerPackage="de.newsarea.homecockpit.connector.facade.registration.eventhandler">
+
+  <element name="MAIN">
+      <state component="TEST" state="INBOUND" handleEventType="INBOUND" eventhandler="TestEventHandler" />
+      <state component="TEST" state="CONNECTOR" handleEventType="CONNECTOR" eventhandler="TestEventHandler" />
+  </element>
+
+</elements>
