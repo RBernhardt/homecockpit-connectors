@@ -1,5 +1,6 @@
 package de.newsarea.homecockpit.connector.facade;
 
+import de.newsarea.homecockpit.connector.event.ConnectorEventHandlerListener;
 import de.newsarea.homecockpit.connector.event.ValueChangedEventListener;
 import de.newsarea.homecockpit.connector.facade.event.InboundEvent;
 import de.newsarea.homecockpit.connector.facade.event.OutboundEvent;
@@ -29,10 +30,14 @@ public class DefaultConnectorFacade implements ConnectorFacade {
 
     @Override
     public void registerEventHandler(final String element, final String component, final String state, ConnectorEventHandler eventHandler) {
-        eventHandler.addValueChangedEventListener(new ValueChangedEventListener<Object>() {
+        eventHandler.addConnectorEventHandlerListener(new ConnectorEventHandlerListener<Object>() {
             @Override
             public void valueChanged(Object value) {
                 fireEvent(new OutboundEvent(element, component, state, value));
+            }
+            @Override
+            public void stateChanged(String state) {
+                fireEvent(new OutboundEvent(element, component, state, null));
             }
         });
     }

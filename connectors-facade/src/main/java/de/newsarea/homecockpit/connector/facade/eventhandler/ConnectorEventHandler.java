@@ -1,9 +1,9 @@
 package de.newsarea.homecockpit.connector.facade.eventhandler;
 
-import de.newsarea.homecockpit.connector.event.ValueChangedEventListener;
+import de.newsarea.homecockpit.connector.event.ConnectorEventHandlerListener;
 
 public interface ConnectorEventHandler {
 
-    void addValueChangedEventListener(ValueChangedEventListener<Object> valueChangedEventListener);
+    void addConnectorEventHandlerListener(ConnectorEventHandlerListener<Object> connectorEventHandlerListener);
 
 }

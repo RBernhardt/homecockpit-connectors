@@ -1,5 +1,6 @@
 package de.newsarea.homecockpit.connector.facade;
 
+import de.newsarea.homecockpit.connector.event.ConnectorEventHandlerListener;
 import de.newsarea.homecockpit.connector.event.ValueChangedEventListener;
 import de.newsarea.homecockpit.connector.facade.event.InboundEvent;
 import de.newsarea.homecockpit.connector.facade.event.OutboundEvent;
@@ -52,7 +53,7 @@ public class DefaultConnectorFacadeTest {
                 outboundEventListeners.add((ValueChangedEventListener) invocation.getArguments()[0]);
                 return null;
             }
-        }).when(connectorEventHandler).addValueChangedEventListener(any(ValueChangedEventListener.class));
+        }).when(connectorEventHandler).addConnectorEventHandlerListener(any(ConnectorEventHandlerListener.class));
         connectorFacade.registerEventHandler("ELEMENT", "COMPONENT", "STATE", connectorEventHandler);
         // ~
         OutboundEventListener outboundEventListener = mock(OutboundEventListener.class);

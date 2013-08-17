@@ -1,5 +1,6 @@
 package de.newsarea.homecockpit.connector.fsuipc.facade.eventhandler;
 
+import de.newsarea.homecockpit.connector.event.ConnectorEventHandlerListener;
 import de.newsarea.homecockpit.connector.event.ValueChangedEventListener;
 import de.newsarea.homecockpit.connector.facade.eventhandler.ConnectorEventHandler;
 import de.newsarea.homecockpit.connector.facade.eventhandler.InboundEventHandler;
@@ -19,7 +20,7 @@ public class ValueEventHandler extends AbstractFSUIPCEventHandler implements Inb
 
     private static final Logger log = LoggerFactory.getLogger(ValueEventHandler.class);
 
-    private EventListenerSupport<ValueChangedEventListener> eventListeners;
+    private EventListenerSupport<ConnectorEventHandlerListener> eventListeners;
 
     private ByteArray value;
     private ValueConverter<ByteArray, Number> valueConverter;
@@ -91,9 +92,10 @@ public class ValueEventHandler extends AbstractFSUIPCEventHandler implements Inb
         }
     }
 
-    public void addValueChangedEventListener(ValueChangedEventListener<Object> valueChangedEventListener) {
+    @Override
+    public void addConnectorEventHandlerListener(ConnectorEventHandlerListener<Object> connectorEventHandlerListener) {
         if(eventListeners == null) {
-            eventListeners = EventListenerSupport.create(ValueChangedEventListener.class);
+            eventListeners = EventListenerSupport.create(ConnectorEventHandlerListener.class);
             try {
                 getConnector().monitor(new OffsetIdent(getOffset().getValue(), getSize()));
                 getConnector().addEventListener(new ValueChangedEventListener<FSUIPCConnectorEvent>() {
@@ -106,7 +108,7 @@ public class ValueEventHandler extends AbstractFSUIPCEventHandler implements Inb
                 log.error(e.getMessage(), e);
             }
         }
-        eventListeners.addListener(valueChangedEventListener);
+        eventListeners.addListener(connectorEventHandlerListener);
     }
 
     public static <I,O> ValueConverter<I, O> createValueConverterInstance(String valueConverter)

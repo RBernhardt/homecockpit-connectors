@@ -1,5 +1,6 @@
 package de.newsarea.homecockpit.connector.fsuipc.facade.eventhandler;
 
+import de.newsarea.homecockpit.connector.event.ConnectorEventHandlerListener;
 import de.newsarea.homecockpit.connector.event.ValueChangedEventListener;
 import de.newsarea.homecockpit.connector.facade.eventhandler.ConnectorEventHandler;
 import de.newsarea.homecockpit.connector.fsuipc.FSUIPCNetConnector;
@@ -15,7 +16,7 @@ public class ConnectorHighBitEventHandler extends AbstractFSUIPCEventHandler imp
 	
 	private static Logger log = LoggerFactory.getLogger(ConnectorHighBitEventHandler.class);
 
-    private EventListenerSupport<ValueChangedEventListener> eventListeners;
+    private EventListenerSupport<ConnectorEventHandlerListener> eventListeners;
 
     private Byte bitIdx;
     private Boolean isHighBit;
@@ -37,7 +38,7 @@ public class ConnectorHighBitEventHandler extends AbstractFSUIPCEventHandler imp
     public ConnectorHighBitEventHandler(FSUIPCNetConnector connector, Map<String, String> parameters) {
         super(connector, parameters);
         // ~
-        eventListeners = EventListenerSupport.create(ValueChangedEventListener.class);
+        eventListeners = EventListenerSupport.create(ConnectorEventHandlerListener.class);
         //
         try {
             getConnector().monitor(new OffsetIdent(getOffset().getValue(), getSize()));
@@ -63,7 +64,8 @@ public class ConnectorHighBitEventHandler extends AbstractFSUIPCEventHandler imp
 	}
 
     @Override
-    public void addValueChangedEventListener(ValueChangedEventListener<Object> valueChangedEventListener) {
-        eventListeners.addListener(valueChangedEventListener);
+    public void addConnectorEventHandlerListener(ConnectorEventHandlerListener<Object> connectorEventHandlerListener) {
+        eventListeners.addListener(connectorEventHandlerListener);
     }
+
 }

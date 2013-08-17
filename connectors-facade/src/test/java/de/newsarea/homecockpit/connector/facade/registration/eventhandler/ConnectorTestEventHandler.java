@@ -1,5 +1,6 @@
 package de.newsarea.homecockpit.connector.facade.registration.eventhandler;
 
+import de.newsarea.homecockpit.connector.event.ConnectorEventHandlerListener;
 import de.newsarea.homecockpit.connector.event.ValueChangedEventListener;
 import de.newsarea.homecockpit.connector.facade.eventhandler.AbstractEventHandler;
 import de.newsarea.homecockpit.connector.facade.eventhandler.ConnectorEventHandler;
@@ -13,7 +14,8 @@ public class ConnectorTestEventHandler extends AbstractEventHandler implements C
     }
 
     @Override
-    public void addValueChangedEventListener(ValueChangedEventListener<Object> valueChangedEventListener) {
+    public void addConnectorEventHandlerListener(ConnectorEventHandlerListener<Object> connectorEventHandlerListener) {
         //To change body of implemented methods use File | Settings | File Templates.
     }
+
 }
