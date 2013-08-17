@@ -1,7 +1,8 @@
 package de.newsarea.homecockpit.connector.fsuipc.facade.eventhandler;
 
 import de.newsarea.homecockpit.connector.facade.eventhandler.InboundEventHandler;
-import de.newsarea.homecockpit.connector.fsuipc.FSUIPCNetConnector;
+import de.newsarea.homecockpit.connector.fsuipc.FSUIPCConnector;
+import de.newsarea.homecockpit.connector.fsuipc.FSUIPCGeneralConnector;
 import de.newsarea.homecockpit.fsuipc.domain.OffsetIdent;
 import de.newsarea.homecockpit.fsuipc.domain.OffsetItem;
 import org.slf4j.Logger;
@@ -24,7 +25,7 @@ public class InboundToggleBitEventHandler extends AbstractFSUIPCEventHandler imp
         return bitIdx;
     }
 
-    public InboundToggleBitEventHandler(FSUIPCNetConnector connector, Map<String, String> parameters) {
+    public InboundToggleBitEventHandler(FSUIPCConnector connector, Map<String, String> parameters) {
         super(connector, parameters);
     }
 

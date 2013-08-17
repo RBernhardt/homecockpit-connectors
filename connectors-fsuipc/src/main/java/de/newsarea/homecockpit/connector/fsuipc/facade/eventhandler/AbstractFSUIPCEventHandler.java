@@ -2,7 +2,7 @@ package de.newsarea.homecockpit.connector.fsuipc.facade.eventhandler;
 
 import de.newsarea.homecockpit.connector.facade.eventhandler.AbstractEventHandler;
 import de.newsarea.homecockpit.connector.fsuipc.FSUIPCConnector;
-import de.newsarea.homecockpit.connector.fsuipc.FSUIPCNetConnector;
+import de.newsarea.homecockpit.connector.fsuipc.FSUIPCGeneralConnector;
 import de.newsarea.homecockpit.connector.fsuipc.facade.converter.FSUIPCOffsetConverter;
 import de.newsarea.homecockpit.connector.fsuipc.facade.eventhandler.domain.FSUIPCOffset;
 
@@ -27,7 +27,7 @@ public abstract class AbstractFSUIPCEventHandler extends AbstractEventHandler<FS
         return size;
     }
 
-    public AbstractFSUIPCEventHandler(FSUIPCNetConnector connector, Map<String, String> parameters) {
+    public AbstractFSUIPCEventHandler(FSUIPCConnector connector, Map<String, String> parameters) {
         super(connector, parameters);
     }
 

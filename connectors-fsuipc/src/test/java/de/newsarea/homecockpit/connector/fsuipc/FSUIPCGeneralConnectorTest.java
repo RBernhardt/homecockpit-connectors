@@ -22,9 +22,9 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 import static org.testng.AssertJUnit.assertEquals;
 
-public class FSUIPCNetConnectorTest {
+public class FSUIPCGeneralConnectorTest {
 
-    private static Logger log = LoggerFactory.getLogger(FSUIPCNetConnectorTest.class);
+    private static Logger log = LoggerFactory.getLogger(FSUIPCGeneralConnectorTest.class);
 	
 	private GeneralConnector<String> generalConnector;
 	private FSUIPCConnector fsuipcConnector;
@@ -32,7 +32,7 @@ public class FSUIPCNetConnectorTest {
 	@BeforeMethod
 	public void beforeMethod() throws IOException {
         generalConnector = mock(GeneralConnector.class);
-		fsuipcConnector = new FSUIPCNetConnector(generalConnector);
+		fsuipcConnector = new FSUIPCGeneralConnector(generalConnector);
 	}
 	
 	@Test
@@ -62,7 +62,7 @@ public class FSUIPCNetConnectorTest {
             }
         }).when(generalConnector).addEventListener(any(ValueChangedEventListener.class));
         // ~
-        final FSUIPCNetConnector fsuipcConnector = new FSUIPCNetConnector(generalConnector);
+        final FSUIPCGeneralConnector fsuipcConnector = new FSUIPCGeneralConnector(generalConnector);
         // ~
         final List<OffsetItem> offsetItems = Collections.synchronizedList(new ArrayList<OffsetItem>());
         new Thread(new Runnable() {

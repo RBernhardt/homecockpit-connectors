@@ -1,6 +1,7 @@
 package de.newsarea.homecockpit.connector.fsuipc.facade.eventhandler;
 
-import de.newsarea.homecockpit.connector.fsuipc.FSUIPCNetConnector;
+import de.newsarea.homecockpit.connector.fsuipc.FSUIPCConnector;
+import de.newsarea.homecockpit.connector.fsuipc.FSUIPCGeneralConnector;
 import de.newsarea.homecockpit.fsuipc.domain.OffsetIdent;
 import de.newsarea.homecockpit.fsuipc.domain.OffsetItem;
 import org.testng.annotations.BeforeMethod;
@@ -14,13 +15,13 @@ import static org.mockito.Mockito.*;
 
 public class InboundToggleBitEventHandlerTest {
 
-    private FSUIPCNetConnector fsuipcConnector;
+    private FSUIPCConnector fsuipcConnector;
     private InboundToggleBitEventHandler inboundToggleBitEventHandler;
     private Map<String, String> parameters;
 
     @BeforeMethod
     public void beforeMethod() {
-        fsuipcConnector = mock(FSUIPCNetConnector.class);
+        fsuipcConnector = mock(FSUIPCConnector.class);
         parameters = new HashMap<>();
         parameters.put("offset", String.valueOf("0x0001"));
         parameters.put("size", String.valueOf("2"));

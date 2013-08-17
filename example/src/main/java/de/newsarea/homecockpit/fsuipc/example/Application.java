@@ -5,7 +5,7 @@ import de.newsarea.homecockpit.connector.facade.ConnectorFacade;
 import de.newsarea.homecockpit.connector.facade.DefaultConnectorFacade;
 import de.newsarea.homecockpit.connector.facade.registration.XmlEventHandlerRegistrationService;
 import de.newsarea.homecockpit.connector.fsuipc.FSUIPCConnector;
-import de.newsarea.homecockpit.connector.fsuipc.FSUIPCNetConnector;
+import de.newsarea.homecockpit.connector.fsuipc.FSUIPCGeneralConnector;
 import de.newsarea.homecockpit.connector.net.NetGeneralConnector;
 
 import java.awt.event.WindowAdapter;
@@ -15,7 +15,7 @@ import java.net.ConnectException;
 public class Application {
 
     public static void main(String[] args) throws InterruptedException, ConnectException {
-        FSUIPCConnector fsuipcConnector = new FSUIPCNetConnector(new NetGeneralConnector("drevil", 4020));
+        FSUIPCConnector fsuipcConnector = new FSUIPCGeneralConnector(new NetGeneralConnector("drevil", 4020));
         // ~
         Application app = new Application();
         app.run(fsuipcConnector);

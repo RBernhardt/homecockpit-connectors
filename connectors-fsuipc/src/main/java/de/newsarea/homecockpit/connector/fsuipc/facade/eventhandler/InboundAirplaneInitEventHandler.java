@@ -1,7 +1,8 @@
 package de.newsarea.homecockpit.connector.fsuipc.facade.eventhandler;
 
 import de.newsarea.homecockpit.connector.facade.eventhandler.InboundEventHandler;
-import de.newsarea.homecockpit.connector.fsuipc.FSUIPCNetConnector;
+import de.newsarea.homecockpit.connector.fsuipc.FSUIPCConnector;
+import de.newsarea.homecockpit.connector.fsuipc.FSUIPCGeneralConnector;
 import de.newsarea.homecockpit.connector.fsuipc.facade.eventhandler.domain.AirplanePosition;
 import de.newsarea.homecockpit.fsuipc.domain.ByteArray;
 import de.newsarea.homecockpit.fsuipc.domain.OffsetItem;
@@ -17,7 +18,7 @@ public class InboundAirplaneInitEventHandler extends AbstractFSUIPCEventHandler 
 
     private static final Logger log = LoggerFactory.getLogger(InboundAirplaneInitEventHandler.class);
 
-    public InboundAirplaneInitEventHandler(FSUIPCNetConnector connector, Map<String, String> parameters) {
+    public InboundAirplaneInitEventHandler(FSUIPCConnector connector, Map<String, String> parameters) {
         super(connector, parameters);
     }
 

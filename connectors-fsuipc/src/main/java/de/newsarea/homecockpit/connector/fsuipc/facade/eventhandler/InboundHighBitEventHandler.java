@@ -1,7 +1,8 @@
 package de.newsarea.homecockpit.connector.fsuipc.facade.eventhandler;
 
 import de.newsarea.homecockpit.connector.facade.eventhandler.InboundEventHandler;
-import de.newsarea.homecockpit.connector.fsuipc.FSUIPCNetConnector;
+import de.newsarea.homecockpit.connector.fsuipc.FSUIPCConnector;
+import de.newsarea.homecockpit.connector.fsuipc.FSUIPCGeneralConnector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,7 +11,7 @@ import java.util.concurrent.TimeoutException;
 
 public class InboundHighBitEventHandler extends AbstractFSUIPCEventHandler implements InboundEventHandler {
 
-	private static Logger log = LoggerFactory.getLogger(InboundHighBitEventHandler.class);
+	private static final Logger log = LoggerFactory.getLogger(InboundHighBitEventHandler.class);
 
 	private Byte bitIdx;
 
@@ -21,7 +22,7 @@ public class InboundHighBitEventHandler extends AbstractFSUIPCEventHandler imple
         return bitIdx;
     }
 
-    public InboundHighBitEventHandler(FSUIPCNetConnector connector, Map<String, String> parameters) {
+    public InboundHighBitEventHandler(FSUIPCConnector connector, Map<String, String> parameters) {
         super(connector, parameters);
     }
 

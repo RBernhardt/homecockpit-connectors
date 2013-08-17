@@ -4,7 +4,8 @@ import de.newsarea.homecockpit.connector.event.ConnectorEventHandlerListener;
 import de.newsarea.homecockpit.connector.event.ValueChangedEventListener;
 import de.newsarea.homecockpit.connector.facade.eventhandler.ConnectorEventHandler;
 import de.newsarea.homecockpit.connector.facade.eventhandler.InboundEventHandler;
-import de.newsarea.homecockpit.connector.fsuipc.FSUIPCNetConnector;
+import de.newsarea.homecockpit.connector.fsuipc.FSUIPCConnector;
+import de.newsarea.homecockpit.connector.fsuipc.FSUIPCGeneralConnector;
 import de.newsarea.homecockpit.connector.fsuipc.event.FSUIPCConnectorEvent;
 import de.newsarea.homecockpit.connector.fsuipc.facade.eventhandler.converter.ValueConverter;
 import de.newsarea.homecockpit.fsuipc.domain.ByteArray;
@@ -45,7 +46,7 @@ public class ValueEventHandler extends AbstractFSUIPCEventHandler implements Inb
         return valueConverter;
     }
 
-    public ValueEventHandler(FSUIPCNetConnector connector, Map<String, String> parameters) {
+    public ValueEventHandler(FSUIPCConnector connector, Map<String, String> parameters) {
         super(connector, parameters);
     }
 

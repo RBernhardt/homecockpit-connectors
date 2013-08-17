@@ -19,7 +19,7 @@ import java.util.concurrent.TimeoutException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class FSUIPCNetConnector extends AbstractConnector<FSUIPCConnectorEvent> implements FSUIPCConnector {
+public class FSUIPCGeneralConnector extends AbstractConnector<FSUIPCConnectorEvent> implements FSUIPCConnector {
 
     public enum MessageType {
         MONITOR,
@@ -32,13 +32,13 @@ public class FSUIPCNetConnector extends AbstractConnector<FSUIPCConnectorEvent> 
 	private static final String REGEX_MAIN = "([A-Z]+)\\[(.*)\\]";
     private static final String REGEX_ITEM = "0x([A-F0-9]{1,4}):([0-9]+)(?::0x((?:[A-F0-9][A-F0-9])+))?";
 	
-	private static Logger log = LoggerFactory.getLogger(FSUIPCNetConnector.class);
+	private static Logger log = LoggerFactory.getLogger(FSUIPCGeneralConnector.class);
 
     private Map<String, OffsetItem> receivedValues;
 	
 	private final Semaphore mutex = new Semaphore(0);
 
-    public FSUIPCNetConnector(GeneralConnector generalConnector) {
+    public FSUIPCGeneralConnector(GeneralConnector generalConnector) {
         super(generalConnector);
         receivedValues = new HashMap<>();
     }
@@ -112,7 +112,7 @@ public class FSUIPCNetConnector extends AbstractConnector<FSUIPCConnectorEvent> 
 
     @Override
     public String toString() {
-        return "FSUIPCNetConnector{" +
+        return "FSUIPCGeneralConnector{" +
                 "receivedValues=" + receivedValues +
                 '}';
     }

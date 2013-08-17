@@ -3,7 +3,8 @@ package de.newsarea.homecockpit.connector.fsuipc.facade.eventhandler;
 import de.newsarea.homecockpit.connector.event.ConnectorEventHandlerListener;
 import de.newsarea.homecockpit.connector.event.ValueChangedEventListener;
 import de.newsarea.homecockpit.connector.facade.eventhandler.ConnectorEventHandler;
-import de.newsarea.homecockpit.connector.fsuipc.FSUIPCNetConnector;
+import de.newsarea.homecockpit.connector.fsuipc.FSUIPCConnector;
+import de.newsarea.homecockpit.connector.fsuipc.FSUIPCGeneralConnector;
 import de.newsarea.homecockpit.connector.fsuipc.event.FSUIPCConnectorEvent;
 import de.newsarea.homecockpit.fsuipc.domain.OffsetIdent;
 import org.apache.commons.lang3.event.EventListenerSupport;
@@ -35,7 +36,7 @@ public class ConnectorHighBitEventHandler extends AbstractFSUIPCEventHandler imp
         return isHighBit;
     }
 
-    public ConnectorHighBitEventHandler(FSUIPCNetConnector connector, Map<String, String> parameters) {
+    public ConnectorHighBitEventHandler(FSUIPCConnector connector, Map<String, String> parameters) {
         super(connector, parameters);
         // ~
         eventListeners = EventListenerSupport.create(ConnectorEventHandlerListener.class);
