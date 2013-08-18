@@ -12,6 +12,11 @@ public class FSUIPCOffset {
         this.value = value;
     }
 
+    public static FSUIPCOffset fromString(String value) {
+        int offset = Integer.parseInt(value.replaceAll("0x", ""), 16);
+        return new FSUIPCOffset(offset);
+    }
+
     @Override
     public String toString() {
         return "FSUIPCOffset{" +
