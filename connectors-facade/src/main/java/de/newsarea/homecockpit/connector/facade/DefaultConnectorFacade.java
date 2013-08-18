@@ -54,12 +54,13 @@ public class DefaultConnectorFacade implements ConnectorFacade {
     }
 
     @Override
-    public void postEvent(InboundEvent inboundEvent) {
+    public boolean postEvent(InboundEvent inboundEvent) {
         String eventSignature = inboundEvent.getEventSignature();
         if(!inboundEventHandlers.containsKey(eventSignature)) {
-            throw new IllegalArgumentException();
+            return false;
         }
         inboundEventHandlers.get(eventSignature).handleInboundEvent(inboundEvent.getValue());
+        return true;
     }
 
 }

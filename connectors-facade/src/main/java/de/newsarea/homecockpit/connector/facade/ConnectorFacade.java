@@ -13,6 +13,6 @@ public interface ConnectorFacade {
 
     void addEventListener(OutboundEventListener outboundEventListener);
 
-    void postEvent(InboundEvent inboundEvent);
+    boolean postEvent(InboundEvent inboundEvent);
 
 }
