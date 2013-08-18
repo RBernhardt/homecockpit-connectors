@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.Mockito.*;
+import static org.testng.AssertJUnit.assertFalse;
+import static org.testng.AssertJUnit.assertTrue;
 
 public class DefaultConnectorFacadeTest {
 
@@ -32,15 +34,15 @@ public class DefaultConnectorFacadeTest {
         connectorFacade.registerEventHandler("ELEMENT", "COMPONENT", "STATE", inboundEventHandler);
         // ~
         InboundEvent inboundEvent = new InboundEvent("ELEMENT", "COMPONENT", "STATE", 123456);
-        connectorFacade.postEvent(inboundEvent);
+        assertTrue(connectorFacade.postEvent(inboundEvent));
         // ~
         verify(inboundEventHandler).handleInboundEvent(inboundEvent.getValue());
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
+    @Test
     public void shouldNotHandlePostEvent() throws Exception {
         InboundEvent inboundEvent = new InboundEvent("ELEMENT2", "COMPONENT", "STATE", 123456);
-        connectorFacade.postEvent(inboundEvent);
+        assertFalse(connectorFacade.postEvent(inboundEvent));
     }
 
     @Test
