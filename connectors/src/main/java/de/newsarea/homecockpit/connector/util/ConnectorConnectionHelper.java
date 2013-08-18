@@ -22,6 +22,7 @@ public class ConnectorConnectionHelper {
 
 	public ConnectorConnectionHelper(Connector connector) {
 		this.connector = connector;
+        this.connectorEventListeners = EventListenerSupport.create(ConnectorEventListener.class);
 		this.connectionWorkerThread = new ConnectionWorkerThread(connector);
 		this.connectionWorkerThread.addEventListener(new ConnectorEventListener() {			
 			@Override
@@ -58,9 +59,6 @@ public class ConnectorConnectionHelper {
 	/* EVENT */
 	
 	public void addEventListener(ConnectorEventListener connectorEventListener) {
-        if(connectorEventListeners == null) {
-            connectorEventListeners = EventListenerSupport.create(ConnectorEventListener.class);
-        }
 		connectorEventListeners.addListener(connectorEventListener);
 	}
 
@@ -86,6 +84,7 @@ public class ConnectorConnectionHelper {
 		
 		public ConnectionWorkerThread(Connector connector) {
 			this.connector = connector;
+            this.connectorEventListeners = EventListenerSupport.create(ConnectorEventListener.class);
 		}
 		
 		public void run() {
@@ -118,9 +117,6 @@ public class ConnectorConnectionHelper {
 		}
 		
 		public void addEventListener(ConnectorEventListener eventListener) {
-            if(connectorEventListeners == null) {
-                connectorEventListeners = EventListenerSupport.create(ConnectorEventListener.class);
-            }
 			connectorEventListeners.addListener(eventListener);
 		}
 

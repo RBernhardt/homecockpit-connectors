@@ -29,6 +29,7 @@ public class USBHardwareInterface {
     public USBHardwareInterface(int vendorId, int productId) {
         this.vendorId = vendorId;
         this.productId = productId;
+        this.valueEventListeners = EventListenerSupport.create(ValueEventListener.class);
         //
         ClassPathLibraryLoader.loadNativeHIDLibrary();
     }
@@ -109,9 +110,6 @@ public class USBHardwareInterface {
     }
 
     public void addEventListener(ValueEventListener valueEventListener) {
-        if(valueEventListeners == null) {
-            valueEventListeners = EventListenerSupport.create(ValueEventListener.class);
-        }
         valueEventListeners.addListener(valueEventListener);
     }
 
@@ -127,6 +125,7 @@ public class USBHardwareInterface {
 
         private HIDDeviceReaderThread(HIDDevice hidDevice) {
             this.hidDevice = hidDevice;
+            this.valueEventListeners = EventListenerSupport.create(ValueEventListener.class);
         }
 
         public void run() {
@@ -154,9 +153,6 @@ public class USBHardwareInterface {
         }
 
         public void addEventListener(ValueEventListener valueEventListener) {
-            if(valueEventListeners == null) {
-                valueEventListeners = EventListenerSupport.create(ValueEventListener.class);
-            }
             valueEventListeners.addListener(valueEventListener);
         }
 
