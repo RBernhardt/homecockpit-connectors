@@ -5,6 +5,8 @@ import de.newsarea.homecockpit.connector.facade.event.OutboundEventListener;
 import de.newsarea.homecockpit.connector.facade.eventhandler.ConnectorEventHandler;
 import de.newsarea.homecockpit.connector.facade.eventhandler.InboundEventHandler;
 
+import java.io.IOException;
+
 public interface ConnectorFacade {
 
     void registerEventHandler(String element, String component, String state, InboundEventHandler eventHandler);
@@ -13,6 +15,6 @@ public interface ConnectorFacade {
 
     void addEventListener(OutboundEventListener outboundEventListener);
 
-    boolean postEvent(InboundEvent inboundEvent);
+    boolean postEvent(InboundEvent inboundEvent) throws IOException;
 
 }

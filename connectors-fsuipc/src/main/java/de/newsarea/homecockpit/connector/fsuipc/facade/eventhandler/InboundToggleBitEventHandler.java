@@ -30,11 +30,11 @@ public class InboundToggleBitEventHandler extends AbstractFSUIPCEventHandler imp
     }
 
     @Override
-    public void handleInboundEvent(Object value) {
+    public void handleInboundEvent(Object value) throws IOException {
 		log.debug("handleOutput - {}", value);
         try {
             toggleBit(getOffset().getValue(), getSize(), getBitIdx());
-        } catch (Exception e) {
+        } catch (TimeoutException e) {
             log.error(e.getMessage(), e);
         }
     }

@@ -10,6 +10,7 @@ import de.newsarea.homecockpit.fsuipc.util.FSUIPCUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -23,7 +24,7 @@ public class InboundAirplaneInitEventHandler extends AbstractFSUIPCEventHandler 
     }
 
     @Override
-    public void handleInboundEvent(Object value) {
+    public void handleInboundEvent(Object value) throws IOException {
         if(!(value instanceof AirplanePosition)) {
             throw new IllegalArgumentException("airplane position object expected - " + value);
         }
@@ -48,11 +49,7 @@ public class InboundAirplaneInitEventHandler extends AbstractFSUIPCEventHandler 
         // heading
         offsetItems.add(new OffsetItem(0x0580, 4, ByteArray.create((int)FSUIPCUtil.toFSUIPCDegree(airplanePosition.getHeading()), 4)));
         //
-        try {
-            getConnector().write(offsetItems.toArray(new OffsetItem[offsetItems.size()]));
-        } catch(Exception ex) {
-            log.error(ex.getMessage(), ex);
-        }
+        getConnector().write(offsetItems.toArray(new OffsetItem[offsetItems.size()]));
     }
 
 }

@@ -3,9 +3,16 @@ package de.newsarea.homecockpit.connector.fsuipc.facade.eventhandler;
 import de.newsarea.homecockpit.connector.facade.eventhandler.InboundEventHandler;
 import de.newsarea.homecockpit.connector.fsuipc.FSUIPCConnector;
 import de.newsarea.homecockpit.connector.fsuipc.FSUIPCGeneralConnector;
+import de.newsarea.homecockpit.connector.fsuipc.facade.eventhandler.domain.FSUIPCOffset;
+import de.newsarea.homecockpit.fsuipc.domain.ByteArray;
+import de.newsarea.homecockpit.fsuipc.domain.OffsetIdent;
+import de.newsarea.homecockpit.fsuipc.domain.OffsetItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.util.AbstractMap;
+import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.TimeoutException;
 
@@ -22,14 +29,24 @@ public class InboundHighBitEventHandler extends AbstractFSUIPCEventHandler imple
         return bitIdx;
     }
 
+    public InboundHighBitEventHandler(FSUIPCConnector connector, FSUIPCOffset offset, int size, Byte bitIdx) {
+        super(connector,
+            toParameters(
+                new AbstractMap.SimpleEntry<>("offset", String.valueOf(offset.getValue())),
+                new AbstractMap.SimpleEntry<>("size", String.valueOf(size)),
+                new AbstractMap.SimpleEntry<>("bitIdx", String.valueOf(bitIdx))
+            )
+        );
+    }
+
     public InboundHighBitEventHandler(FSUIPCConnector connector, Map<String, String> parameters) {
         super(connector, parameters);
     }
 
     @Override
-    public void handleInboundEvent(Object value) {
+    public void handleInboundEvent(Object value) throws IOException {
         try {
-            toggleBit(getOffset().getValue(), getBitIdx());
+            toggleBit(getOffset().getValue(), getSize(), getBitIdx());
         } catch (TimeoutException e) {
             log.error(e.getMessage(), e);
         }
@@ -37,9 +54,10 @@ public class InboundHighBitEventHandler extends AbstractFSUIPCEventHandler imple
 	
 	/* HELPER */
 	
-	private void toggleBit(int offset, byte bitIdx) throws TimeoutException {
-		/* OffsetItem offsetItem = getConnector().read(new OffsetIdent(offset, getSize()));
+	private void toggleBit(int offset, int size, byte bitIdx) throws TimeoutException, IOException {
+		OffsetItem offsetItem = getConnector().read(new OffsetIdent(offset, size));
         ByteArray byteArray = offsetItem.getValue();
+        byte[] value = byteArray.toByteArray();
 		int bidx = bitIdx / 8;
 		byte nidx = (byte)(bitIdx % 8);
 		byte newByteValue = value[value.length - 1 - bidx];
@@ -50,11 +68,10 @@ public class InboundHighBitEventHandler extends AbstractFSUIPCEventHandler imple
 	    // wait for set to 0 from mcp
 	    boolean isLowBit = false;
 	    while(!isLowBit) {
-	    	OffsetItem rdOffsetItem = getConnector().read(new OffsetIdent(offset, getSize()));
+	    	OffsetItem rdOffsetItem = getConnector().read(new OffsetIdent(offset, size));
+            log.info(rdOffsetItem.toString());
 	    	isLowBit = !rdOffsetItem.getValue().isHighBit(bitIdx);
 	    }
-	    */
-        throw new UnsupportedOperationException();
 	}
 
 }

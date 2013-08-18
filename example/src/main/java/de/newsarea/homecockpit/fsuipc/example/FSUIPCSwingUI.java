@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import javax.swing.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.IOException;
 
 class FSUIPCSwingUI extends JFrame {
 
@@ -52,7 +53,11 @@ class FSUIPCSwingUI extends JFrame {
             @Override
             public void keyPressed(KeyEvent e) {
                 if(e.getKeyCode() == 'P') {
-                    togglePause();
+                    try {
+                        togglePause();
+                    } catch(Exception ex) {
+                        log.error(ex.getMessage(), ex);
+                    }
                 }
             }
             @Override
@@ -74,7 +79,7 @@ class FSUIPCSwingUI extends JFrame {
     /***
      * Offset: 0x0262; Size: 2;
      */
-    private void togglePause() {
+    private void togglePause() throws IOException {
         if(isPause) {
             connectorFacade.postEvent(new InboundEvent("MAIN", "PAUSE", "OFF", null));
             isPause = false;

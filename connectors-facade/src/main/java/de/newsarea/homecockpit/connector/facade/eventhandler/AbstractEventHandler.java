@@ -1,5 +1,7 @@
 package de.newsarea.homecockpit.connector.facade.eventhandler;
 
+import java.util.AbstractMap;
+import java.util.HashMap;
 import java.util.Map;
 
 public abstract class AbstractEventHandler<C> implements EventHandler<C> {
@@ -28,6 +30,14 @@ public abstract class AbstractEventHandler<C> implements EventHandler<C> {
             return getParameters().get(key);
         }
         throw new IllegalArgumentException("key '" + key + "' not found");
+    }
+
+    protected static Map<String, String> toParameters(AbstractMap.SimpleEntry<String, String>... entries) {
+        Map<String, String> map = new HashMap<>();
+        for(AbstractMap.SimpleEntry<String, String> entry : entries) {
+            map.put(entry.getKey(), entry.getValue());
+        }
+        return map;
     }
 
     @Override

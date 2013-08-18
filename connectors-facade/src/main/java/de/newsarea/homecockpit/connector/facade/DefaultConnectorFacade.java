@@ -10,6 +10,7 @@ import de.newsarea.homecockpit.connector.facade.eventhandler.InboundEventHandler
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -54,7 +55,7 @@ public class DefaultConnectorFacade implements ConnectorFacade {
     }
 
     @Override
-    public boolean postEvent(InboundEvent inboundEvent) {
+    public boolean postEvent(InboundEvent inboundEvent) throws IOException {
         String eventSignature = inboundEvent.getEventSignature();
         if(!inboundEventHandlers.containsKey(eventSignature)) {
             return false;
