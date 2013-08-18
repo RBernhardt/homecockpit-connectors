@@ -29,18 +29,18 @@ public class InboundHighBitEventHandler extends AbstractFSUIPCEventHandler imple
         return bitIdx;
     }
 
-    public InboundHighBitEventHandler(FSUIPCConnector connector, FSUIPCOffset offset, int size, Byte bitIdx) {
-        super(connector,
-            toParameters(
-                new AbstractMap.SimpleEntry<>("offset", String.valueOf(offset.getValue())),
-                new AbstractMap.SimpleEntry<>("size", String.valueOf(size)),
-                new AbstractMap.SimpleEntry<>("bitIdx", String.valueOf(bitIdx))
-            )
-        );
-    }
-
     public InboundHighBitEventHandler(FSUIPCConnector connector, Map<String, String> parameters) {
         super(connector, parameters);
+    }
+
+    public InboundHighBitEventHandler(FSUIPCConnector connector, FSUIPCOffset offset, int size, Byte bitIdx) {
+        super(connector,
+                toParameters(
+                        new AbstractMap.SimpleEntry<>("offset", String.valueOf(offset.getValue())),
+                        new AbstractMap.SimpleEntry<>("size", String.valueOf(size)),
+                        new AbstractMap.SimpleEntry<>("bitIdx", String.valueOf(bitIdx))
+                )
+        );
     }
 
     @Override
