@@ -69,7 +69,6 @@ public class InboundHighBitEventHandler extends AbstractFSUIPCEventHandler imple
 	    boolean isLowBit = false;
 	    while(!isLowBit) {
 	    	OffsetItem rdOffsetItem = getConnector().read(new OffsetIdent(offset, size));
-            log.info(rdOffsetItem.toString());
 	    	isLowBit = !rdOffsetItem.getValue().isHighBit(bitIdx);
 	    }
 	}
