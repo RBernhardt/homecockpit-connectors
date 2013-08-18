@@ -7,12 +7,17 @@ import de.newsarea.homecockpit.connector.facade.registration.XmlEventHandlerRegi
 import de.newsarea.homecockpit.connector.fsuipc.FSUIPCConnector;
 import de.newsarea.homecockpit.connector.fsuipc.FSUIPCGeneralConnector;
 import de.newsarea.homecockpit.connector.net.NetGeneralConnector;
+import de.newsarea.homecockpit.connector.util.ConnectorConnectionHelper;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.net.ConnectException;
 
 public class Application {
+
+    private Connector connector;
+    private ConnectorConnectionHelper connectorConnectionHelper;
+    private FSUIPCSwingUI fsuipcSwingUI;
 
     public static void main(String[] args) throws InterruptedException, ConnectException {
         FSUIPCConnector fsuipcConnector = new FSUIPCGeneralConnector(new NetGeneralConnector("drevil", 4020));
@@ -21,24 +26,32 @@ public class Application {
         app.run(fsuipcConnector);
     }
 
-    public void run(final Connector connector) throws ConnectException {
-        connector.open();
+    public void run(Connector inputConnector) throws ConnectException {
+        connector = inputConnector;
+        // ~
+        connectorConnectionHelper = new ConnectorConnectionHelper(connector);
+        connectorConnectionHelper.open();
         // ~
         ConnectorFacade connectorFacade = new DefaultConnectorFacade();
         // ~
         XmlEventHandlerRegistrationService xmlEventHandlerRegistrationService = new XmlEventHandlerRegistrationService(connectorFacade);
         xmlEventHandlerRegistrationService.registerEventHandler(connector, "/de/newsarea/homecockpit/connector/fsuipc/general.xml");
         // ~
-        FSUIPCSwingUI fsuipSwingUI = new FSUIPCSwingUI(connectorFacade);
-        fsuipSwingUI.addWindowListener(new WindowAdapter() {
+        fsuipcSwingUI = new FSUIPCSwingUI(connectorFacade);
+        fsuipcSwingUI.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
                 connector.close();
             }
         });
-        fsuipSwingUI.initialize();
+        fsuipcSwingUI.initialize();
         // show frame
-        fsuipSwingUI.setVisible(true);
+        fsuipcSwingUI.setVisible(true);
+    }
+
+    public void shutdown() {
+        fsuipcSwingUI.setVisible(false);
+        connectorConnectionHelper.close();
     }
 
 }
