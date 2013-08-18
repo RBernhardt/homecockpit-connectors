@@ -1,4 +1,4 @@
-package de.newsarea.homecockpit.connector.util;
+package de.newsarea.homecockpit.connector.facade.registration.util;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +28,19 @@ public final class ClassLoaderHelper {
 		}
 		return null;
 	}
+
+    public static Constructor<?> determineConstructorByNumOfArgs(Class<?> clazz, int numOfArgs) {
+        try {
+            for(Constructor<?> constructor : clazz.getConstructors()) {
+                if(numOfArgs == constructor.getParameterTypes().length) {
+                    return constructor;
+                }
+            }
+        } catch (SecurityException e) {
+            log.error(e.getMessage(), e);
+        }
+        return null;
+    }
 
 	public static List<Class<?>> determineClasses(String packageName) throws ClassNotFoundException, IOException {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();

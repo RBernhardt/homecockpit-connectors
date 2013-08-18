@@ -3,7 +3,7 @@ package de.newsarea.homecockpit.connector.facade.registration;
 import de.newsarea.homecockpit.connector.Connector;
 import de.newsarea.homecockpit.connector.event.ConnectorEvent;
 import de.newsarea.homecockpit.connector.facade.eventhandler.AbstractEventHandler;
-import de.newsarea.homecockpit.connector.util.ClassLoaderHelper;
+import de.newsarea.homecockpit.connector.facade.registration.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,7 +31,7 @@ public final class EventHandlerRegistrationUtils {
     public static <C extends Connector<T>, T extends ConnectorEvent> AbstractEventHandler<C> createEventHandler(C connector, Class<?> clazz, Map<String, String> params)
             throws InvocationTargetException, IllegalAccessException, InstantiationException {
         log.debug("creating eventhandler " + clazz);
-        Constructor<?> constructor =  ClassLoaderHelper.determineFirstConstructor(clazz);
+        Constructor<?> constructor =  ClassLoaderHelper.determineConstructorByNumOfArgs(clazz, 2);
         if(constructor == null) {
             throw new IllegalArgumentException("can't find contstructor of class - " + clazz);
         }
