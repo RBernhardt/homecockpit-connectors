@@ -7,14 +7,13 @@ import com.codeminders.hidapi.HIDManager;
 import de.newsarea.homecockpit.connector.event.ValueEventListener;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.lang3.event.EventListenerSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.ConnectException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 public class USBHardwareInterface {
 
@@ -25,11 +24,7 @@ public class USBHardwareInterface {
     private int vendorId;
     private int productId;
     private HIDDeviceReaderThread hidDeviceReaderThread;
-    private List<ValueEventListener> valueEventListeners = new ArrayList<>();
-
-    static {
-        //System.loadLibrary("hidapi-jni");
-    }
+    private EventListenerSupport<ValueEventListener> valueEventListeners;
 
     public USBHardwareInterface(int vendorId, int productId) {
         this.vendorId = vendorId;
@@ -72,7 +67,7 @@ public class USBHardwareInterface {
         hidDeviceReaderThread.addEventListener(new ValueEventListener() {
             @Override
             public void valueReceived(String value) {
-                fireValueReceivedEvent(value);
+                valueEventListeners.fire().valueReceived(value);
             }
         });
         hidDeviceReaderThread.start();
@@ -89,44 +84,45 @@ public class USBHardwareInterface {
 
     public void close() {
         if(hidDeviceReaderThread != null) {
-            try {
-                hidDeviceReaderThread.exit();
-                hidDeviceReaderThread.join();
-            } catch (InterruptedException e) {
-                log.error(e.getMessage(), e);
-            }
+            hidDeviceReaderThread.exit();
         }
         if(hidDevice != null) {
             try {
                 hidDevice.close();
+                log.debug("hidDevice closed");
             } catch (IOException e) {
+                log.error(e.getMessage(), e);
+            }
+        }
+        if(hidDeviceReaderThread != null) {
+            try {
+                hidDeviceReaderThread.join();
+                log.debug("hidDeviceReaderThread joined");
+            } catch (InterruptedException e) {
                 log.error(e.getMessage(), e);
             }
         }
         if(hidManager != null) {
             hidManager.release();
+            log.debug("hidManager released");
         }
     }
 
     public void addEventListener(ValueEventListener valueEventListener) {
-        valueEventListeners.add(valueEventListener);
-    }
-
-    protected void fireValueReceivedEvent(String value) {
-        if(this.valueEventListeners.size() == 0) { return; }
-        for(ValueEventListener valueEventListener : this.valueEventListeners) {
-            valueEventListener.valueReceived(value);
+        if(valueEventListeners == null) {
+            valueEventListeners = EventListenerSupport.create(ValueEventListener.class);
         }
+        valueEventListeners.addListener(valueEventListener);
     }
 
     /* HELPER */
 
     private static final class HIDDeviceReaderThread extends Thread {
 
-        private static final int BUFFERSIZE = 2048;
+        private static final int BUFFER_SIZE = 2048;
 
         private HIDDevice hidDevice;
-        private List<ValueEventListener> valueEventListeners = new ArrayList<ValueEventListener>();
+        private EventListenerSupport<ValueEventListener> valueEventListeners;
         private boolean exit = false;
 
         private HIDDeviceReaderThread(HIDDevice hidDevice) {
@@ -134,36 +130,34 @@ public class USBHardwareInterface {
         }
 
         public void run() {
-            log.info("starting usb reader thread");
-            byte[] buffer = new byte[BUFFERSIZE];
+            log.debug("starting usb reader thread");
+            byte[] buffer = new byte[BUFFER_SIZE];
             while(!exit) {
-                int n = 0;
+                int n;
                 try {
                     n = hidDevice.read(buffer);
                     String hexString = toHexString(buffer, n);
-                    fireValueReceivedEvent(hexString);
+                    valueEventListeners.fire().valueReceived(hexString);
                 } catch (IOException e) {
+                    if(exit) { return; } // io exception on exit is a normal behavior - no logging
+                    log.error(e.getMessage(), e);
+                } catch (Exception e) {
                     log.error(e.getMessage(), e);
                 }
+
             }
         }
 
         public void exit() {
-            log.info("stopping usb reader thread");
-            this.exit = true;
+            log.debug("stopping usb reader thread");
+            exit = true;
         }
 
         public void addEventListener(ValueEventListener valueEventListener) {
-            valueEventListeners.add(valueEventListener);
-        }
-
-        private void fireValueReceivedEvent(String value) {
-            if (this.valueEventListeners.size() == 0) {
-                return;
+            if(valueEventListeners == null) {
+                valueEventListeners = EventListenerSupport.create(ValueEventListener.class);
             }
-            for (ValueEventListener valueEventListener : this.valueEventListeners) {
-                valueEventListener.valueReceived(value);
-            }
+            valueEventListeners.addListener(valueEventListener);
         }
 
         /* HELPER */
@@ -180,10 +174,10 @@ public class USBHardwareInterface {
         HIDManager hidManager = HIDManager.getInstance();
         try {
             HIDDeviceInfo[] devs = hidManager.listDevices();
-            log.info("Devices:\n\n");
+            log.info("Devices:");
             for (int i = 0; i < devs.length; i++) {
-                log.info("" + i + ".\t" + devs[i]);
-                log.info("---------------------------------------------\n");
+                log.info("{}.\t{}", i, devs[i]);
+                log.info("---------------------------------------------");
             }
             hidManager.release();
         } catch (IOException e) {

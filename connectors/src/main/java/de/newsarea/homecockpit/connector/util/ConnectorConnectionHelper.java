@@ -2,11 +2,13 @@ package de.newsarea.homecockpit.connector.util;
 
 import de.newsarea.homecockpit.connector.Connector;
 import de.newsarea.homecockpit.connector.event.ConnectorEventListener;
+import org.apache.commons.lang3.event.EventListenerSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.ConnectException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class ConnectorConnectionHelper {
@@ -14,7 +16,7 @@ public class ConnectorConnectionHelper {
 	private static Logger log = LoggerFactory.getLogger(ConnectorConnectionHelper.class);
 	
 	private Connector connector;
-	private List<ConnectorEventListener> connectorEventListeners = new ArrayList<>();
+	private EventListenerSupport<ConnectorEventListener> connectorEventListeners;
 	
 	private ConnectionWorkerThread connectionWorkerThread;
 
@@ -44,35 +46,39 @@ public class ConnectorConnectionHelper {
 		connectionWorkerThread.exit();
 		try {
 			connectionWorkerThread.join();
+            log.debug("connectionWorkerThread joined - {}", connector);
 		} catch (InterruptedException e) {
 			log.error(e.getMessage(), e);
 		}
 		connector.close();
+        log.debug("connector closed - {}", connector);
 		fireEvent(ConnectorEventListener.State.CLOSED);
 	}
 	
 	/* EVENT */
 	
 	public void addEventListener(ConnectorEventListener connectorEventListener) {
-		connectorEventListeners.add(connectorEventListener);
+        if(connectorEventListeners == null) {
+            connectorEventListeners = EventListenerSupport.create(ConnectorEventListener.class);
+        }
+		connectorEventListeners.addListener(connectorEventListener);
 	}
-	
+
 	private void fireEvent(ConnectorEventListener.State state) {
-		for(ConnectorEventListener connectorEventListener : connectorEventListeners) {
-			connectorEventListener.stateChanged(connector, state);
-		}
+		connectorEventListeners.fire().stateChanged(connector, state);
 	}
 	
 	/* THREAD */
 	
 	private static class ConnectionWorkerThread extends Thread {
-		
-		private List<ConnectorEventListener> connectorEventListeners = new ArrayList<ConnectorEventListener>();
+
+        private EventListenerSupport<ConnectorEventListener> connectorEventListeners;
 		
 		private Connector connector;
 		private boolean exit = false;
 		
 		private int retryTimeout = 0;
+        private long lastTryTime = 0;
 		
 		public void setRetryTimeout(int timeout) {
 			this.retryTimeout = timeout;
@@ -85,18 +91,22 @@ public class ConnectorConnectionHelper {
 		public void run() {
             exit = false;
             while(!exit) {
-                try {
-					fireEvent(ConnectorEventListener.State.OPEN);
-					connector.open();
-					fireEvent(ConnectorEventListener.State.CONNECTED);
-					return;
-				} catch(ConnectException e) {
-				} catch(Exception e) {
-					log.error(e.getMessage(), e);
-				}
+                long tryTimeDiff = (new Date()).getTime() - lastTryTime;
+                if(tryTimeDiff > retryTimeout) {
+                    try {
+                        fireEvent(ConnectorEventListener.State.OPEN);
+                        connector.open();
+                        fireEvent(ConnectorEventListener.State.CONNECTED);
+                        return;
+                    } catch(ConnectException e) {
+                    } catch(Exception e) {
+                        log.error(e.getMessage(), e);
+                    }
+                    lastTryTime = (new Date()).getTime();
+                }
 				//
 				try {
-					Thread.sleep(retryTimeout);
+					Thread.sleep(1);
 				} catch (InterruptedException e) {
 					log.error(e.getMessage(), e);
 				}
@@ -108,15 +118,22 @@ public class ConnectorConnectionHelper {
 		}
 		
 		public void addEventListener(ConnectorEventListener eventListener) {
-			connectorEventListeners.add(eventListener);
+            if(connectorEventListeners == null) {
+                connectorEventListeners = EventListenerSupport.create(ConnectorEventListener.class);
+            }
+			connectorEventListeners.addListener(eventListener);
 		}
-		
-		public void fireEvent(ConnectorEventListener.State state) {
-			for(ConnectorEventListener connectorEventListener : connectorEventListeners) {
-				connectorEventListener.stateChanged(connector, state);
-			}
+
+		private void fireEvent(ConnectorEventListener.State state) {
+			connectorEventListeners.fire().stateChanged(connector, state);
 		}
 		
 	}
 
+    @Override
+    public String toString() {
+        return "ConnectorConnectionHelper{" +
+                "connector=" + connector +
+                '}';
+    }
 }
