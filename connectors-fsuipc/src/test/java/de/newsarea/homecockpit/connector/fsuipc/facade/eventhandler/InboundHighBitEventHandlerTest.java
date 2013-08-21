@@ -12,6 +12,7 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.testng.AssertJUnit.assertEquals;
 
 public class InboundHighBitEventHandlerTest {
 
@@ -20,6 +21,14 @@ public class InboundHighBitEventHandlerTest {
     @BeforeMethod
     public void beforeMethod() {
         fsuipcConnector = mock(FSUIPCConnector.class);
+    }
+
+    @Test
+    public void shouldSetParameters() throws Exception {
+        InboundHighBitEventHandler inboundHighBitEventHandler = new InboundHighBitEventHandler(fsuipcConnector, new FSUIPCOffset(0x1234), 2, (byte)0);
+        assertEquals(new FSUIPCOffset(0x1234), inboundHighBitEventHandler.getOffset());
+        assertEquals(2, (int)inboundHighBitEventHandler.getSize());
+        assertEquals(0, (byte)inboundHighBitEventHandler.getBitIdx());
     }
 
     @Test

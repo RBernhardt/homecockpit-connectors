@@ -3,12 +3,14 @@ package de.newsarea.homecockpit.connector.fsuipc.facade.eventhandler;
 import de.newsarea.homecockpit.connector.facade.eventhandler.InboundEventHandler;
 import de.newsarea.homecockpit.connector.fsuipc.FSUIPCConnector;
 import de.newsarea.homecockpit.connector.fsuipc.FSUIPCGeneralConnector;
+import de.newsarea.homecockpit.connector.fsuipc.facade.eventhandler.domain.FSUIPCOffset;
 import de.newsarea.homecockpit.fsuipc.domain.OffsetIdent;
 import de.newsarea.homecockpit.fsuipc.domain.OffsetItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.AbstractMap;
 import java.util.Map;
 import java.util.concurrent.TimeoutException;
 
@@ -27,6 +29,16 @@ public class InboundToggleBitEventHandler extends AbstractFSUIPCEventHandler imp
 
     public InboundToggleBitEventHandler(FSUIPCConnector connector, Map<String, String> parameters) {
         super(connector, parameters);
+    }
+
+    public InboundToggleBitEventHandler(FSUIPCConnector connector, FSUIPCOffset offset, int size, Byte bitIdx) {
+        this(connector,
+                toParameters(
+                        new AbstractMap.SimpleEntry<>("offset", offset.toHexString()),
+                        new AbstractMap.SimpleEntry<>("size", String.valueOf(size)),
+                        new AbstractMap.SimpleEntry<>("bitIdx", String.valueOf(bitIdx))
+                )
+        );
     }
 
     @Override

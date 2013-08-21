@@ -2,7 +2,6 @@ package de.newsarea.homecockpit.connector.fsuipc.facade.eventhandler;
 
 import de.newsarea.homecockpit.connector.facade.eventhandler.InboundEventHandler;
 import de.newsarea.homecockpit.connector.fsuipc.FSUIPCConnector;
-import de.newsarea.homecockpit.connector.fsuipc.FSUIPCGeneralConnector;
 import de.newsarea.homecockpit.connector.fsuipc.facade.eventhandler.domain.FSUIPCOffset;
 import de.newsarea.homecockpit.fsuipc.domain.ByteArray;
 import de.newsarea.homecockpit.fsuipc.domain.OffsetIdent;
@@ -12,7 +11,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.AbstractMap;
-import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.TimeoutException;
 
@@ -34,9 +32,9 @@ public class InboundHighBitEventHandler extends AbstractFSUIPCEventHandler imple
     }
 
     public InboundHighBitEventHandler(FSUIPCConnector connector, FSUIPCOffset offset, int size, Byte bitIdx) {
-        super(connector,
+        this(connector,
                 toParameters(
-                        new AbstractMap.SimpleEntry<>("offset", String.valueOf(offset.getValue())),
+                        new AbstractMap.SimpleEntry<>("offset", offset.toHexString()),
                         new AbstractMap.SimpleEntry<>("size", String.valueOf(size)),
                         new AbstractMap.SimpleEntry<>("bitIdx", String.valueOf(bitIdx))
                 )

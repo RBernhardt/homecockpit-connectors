@@ -5,9 +5,9 @@ public class AirplanePosition {
 	private double latitude;
 	private double longitude;
 	private double altitude;
-	private double pitch;
-	private double bank;
-	private double heading;
+	private int pitch;
+	private int bank;
+	private int heading;
 	private int speed;
 	
 	public double getLatitude() {
@@ -22,15 +22,15 @@ public class AirplanePosition {
 		return altitude;
 	}
 	
-	public double getPitch() {
+	public int getPitch() {
 		return pitch;
     }
 	
-	public double getBank() {
+	public int getBank() {
 		return bank;
 	}
 	
-	public double getHeading() {
+	public int getHeading() {
 		return heading;
 	}
 
@@ -38,7 +38,7 @@ public class AirplanePosition {
 		return speed;
 	}
 
-	public AirplanePosition(double latitude, double longitude, double altitude, double pitch, double bank, double heading, int speed) {
+	public AirplanePosition(double latitude, double longitude, double altitude, int pitch, int bank, int heading, int speed) {
 		this.latitude = latitude;
 		this.longitude = longitude;
 		this.altitude = altitude;

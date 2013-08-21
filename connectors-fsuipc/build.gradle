@@ -3,7 +3,7 @@ archivesBaseName = 'connectors-fsuipc'
 dependencies {
     compile project(':connectors-facade')
     compile "org.slf4j:slf4j-api:1.7.5"
-    compile "de.newsarea.homecockpit:fsuipc:0.9.2"
+    compile "de.newsarea.homecockpit:fsuipc:1.0.0-SNAPSHOT"
     testCompile "org.slf4j:slf4j-simple:1.7.5"
     testCompile "org.springframework:spring-test:3.1.1.RELEASE"
     testCompile "org.mockito:mockito-all:1.8.5"
