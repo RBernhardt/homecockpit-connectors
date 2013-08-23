@@ -4,7 +4,6 @@ import de.newsarea.homecockpit.connector.fsuipc.FSUIPCConnector;
 import de.newsarea.homecockpit.connector.fsuipc.facade.eventhandler.domain.AirplanePosition;
 import de.newsarea.homecockpit.fsuipc.domain.ByteArray;
 import de.newsarea.homecockpit.fsuipc.domain.OffsetItem;
-import de.newsarea.homecockpit.fsuipc.util.FSUIPCUtil;
 import org.mockito.AdditionalMatchers;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -12,11 +11,8 @@ import org.testng.annotations.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import static org.testng.AssertJUnit.assertEquals;
-import static org.testng.internal.junit.ArrayAsserts.assertArrayEquals;
 
 public class InboundAirplaneInitEventHandlerTest {
 

@@ -1,7 +1,6 @@
 package de.newsarea.homecockpit.connector.facade.registration.eventhandler;
 
 import de.newsarea.homecockpit.connector.event.ConnectorEventHandlerListener;
-import de.newsarea.homecockpit.connector.event.ValueChangedEventListener;
 import de.newsarea.homecockpit.connector.facade.eventhandler.AbstractEventHandler;
 import de.newsarea.homecockpit.connector.facade.eventhandler.ConnectorEventHandler;
 import de.newsarea.homecockpit.connector.facade.eventhandler.InboundEventHandler;

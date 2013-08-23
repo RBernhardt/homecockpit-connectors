@@ -3,7 +3,7 @@ package de.newsarea.homecockpit.connector.facade.registration;
 import de.newsarea.homecockpit.connector.Connector;
 import de.newsarea.homecockpit.connector.event.ConnectorEvent;
 import de.newsarea.homecockpit.connector.facade.eventhandler.AbstractEventHandler;
-import de.newsarea.homecockpit.connector.facade.registration.util.*;
+import de.newsarea.homecockpit.connector.facade.registration.util.ClassLoaderHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
