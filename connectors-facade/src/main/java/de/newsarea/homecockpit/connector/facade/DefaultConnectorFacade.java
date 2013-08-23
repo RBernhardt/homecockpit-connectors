@@ -1,7 +1,7 @@
 package de.newsarea.homecockpit.connector.facade;
 
 import de.newsarea.homecockpit.connector.event.ConnectorEventHandlerListener;
-import de.newsarea.homecockpit.connector.event.ValueChangedEventListener;
+import de.newsarea.homecockpit.connector.facade.event.Event;
 import de.newsarea.homecockpit.connector.facade.event.InboundEvent;
 import de.newsarea.homecockpit.connector.facade.event.OutboundEvent;
 import de.newsarea.homecockpit.connector.facade.event.OutboundEventListener;
@@ -11,26 +11,26 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class DefaultConnectorFacade implements ConnectorFacade {
 
     private static Logger log = LoggerFactory.getLogger(DefaultConnectorFacade.class);
 
-    private Map<String, InboundEventHandler> inboundEventHandlers = new HashMap<>();
+    private Map<Event, InboundEventHandler> inboundEventHandlers = new HashMap<>();
+    private List<Event> outboundEvents = new ArrayList<>();
+
     private List<OutboundEventListener> outboundEventListeners = new ArrayList<>();
 
     @Override
     public void registerEventHandler(String element, String component, String state, InboundEventHandler eventHandler) {
-        String eventSignature = element + "_" + component + "_" + state;
-        inboundEventHandlers.put(eventSignature, eventHandler);
+        Event event = new Event(element, component, state);
+        inboundEventHandlers.put(event, eventHandler);
     }
 
     @Override
     public void registerEventHandler(final String element, final String component, final String state, ConnectorEventHandler eventHandler) {
+        outboundEvents.add(new Event(element, component, state));
         eventHandler.addConnectorEventHandlerListener(new ConnectorEventHandlerListener<Object>() {
             @Override
             public void valueChanged(Object value) {
@@ -56,12 +56,22 @@ public class DefaultConnectorFacade implements ConnectorFacade {
 
     @Override
     public boolean postEvent(InboundEvent inboundEvent) throws IOException {
-        String eventSignature = inboundEvent.getEventSignature();
-        if(!inboundEventHandlers.containsKey(eventSignature)) {
+        Event event = new Event(inboundEvent.getElement(), inboundEvent.getComponent(), inboundEvent.getState());
+        if(!inboundEventHandlers.containsKey(event)) {
             return false;
         }
-        inboundEventHandlers.get(eventSignature).handleInboundEvent(inboundEvent.getValue());
+        inboundEventHandlers.get(event).handleInboundEvent(inboundEvent.getValue());
         return true;
+    }
+
+    @Override
+    public Collection<Event> listRegisteredInboundEvents() {
+        return inboundEventHandlers.keySet();
+    }
+
+    @Override
+    public Collection<Event> listRegisteredOutboundEvents() {
+        return outboundEvents;
     }
 
 }

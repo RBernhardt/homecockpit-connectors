@@ -1,7 +1,7 @@
 package de.newsarea.homecockpit.connector.facade;
 
 import de.newsarea.homecockpit.connector.event.ConnectorEventHandlerListener;
-import de.newsarea.homecockpit.connector.event.ValueChangedEventListener;
+import de.newsarea.homecockpit.connector.facade.event.Event;
 import de.newsarea.homecockpit.connector.facade.event.InboundEvent;
 import de.newsarea.homecockpit.connector.facade.event.OutboundEvent;
 import de.newsarea.homecockpit.connector.facade.event.OutboundEventListener;
@@ -16,8 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.Mockito.*;
-import static org.testng.AssertJUnit.assertFalse;
-import static org.testng.AssertJUnit.assertTrue;
+import static org.testng.AssertJUnit.*;
 
 public class DefaultConnectorFacadeTest {
 
@@ -66,4 +65,23 @@ public class DefaultConnectorFacadeTest {
         // ~
         verify(outboundEventListener).outboundEvent(outboundEvent);
     }
+
+    @Test
+    public void shouldListRegisteredInboundEvents() throws Exception {
+        InboundEventHandler inboundEventHandler = mock(InboundEventHandler.class);
+        connectorFacade.registerEventHandler("ELEMENT", "COMPONENT", "STATE", inboundEventHandler);
+        // ~
+        assertEquals(1, connectorFacade.listRegisteredInboundEvents().size());
+        assertEquals(new Event("ELEMENT", "COMPONENT", "STATE"), connectorFacade.listRegisteredInboundEvents().iterator().next());
+    }
+
+    @Test
+    public void shouldListRegisteredOutboundEvents() throws Exception {
+        ConnectorEventHandler connectorEventHandler = mock(ConnectorEventHandler.class);
+        connectorFacade.registerEventHandler("ELEMENT", "COMPONENT", "STATE", connectorEventHandler);
+        // ~
+        assertEquals(1, connectorFacade.listRegisteredOutboundEvents().size());
+        assertEquals(new Event("ELEMENT", "COMPONENT", "STATE"), connectorFacade.listRegisteredOutboundEvents().iterator().next());
+    }
+
 }
