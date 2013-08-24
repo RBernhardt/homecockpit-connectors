@@ -1,9 +1,11 @@
 include ':connectors'
+include ':connectors-api'
 include ':connectors-facade'
 include ':connectors-fsuipc'
 include ':example'
 
 project(':connectors').buildFileName = 'build.gradle'
+project(':connectors-api').buildFileName = 'build.gradle'
 project(':connectors-facade').buildFileName = 'build.gradle'
 project(':connectors-fsuipc').buildFileName = 'build.gradle'
 project(':example').buildFileName = 'build.gradle'

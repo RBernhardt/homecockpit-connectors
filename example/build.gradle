@@ -5,6 +5,7 @@ archivesBaseName = 'connectors-example'
 mainClassName = "de.newsarea.homecockpit.connector.example.Application"
 
 dependencies {
+    compile project(":connectors")
     compile project(":connectors-fsuipc")
     compile "org.slf4j:slf4j-simple:1.7.5"
 }
