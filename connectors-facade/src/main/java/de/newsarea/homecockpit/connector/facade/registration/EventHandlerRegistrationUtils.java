@@ -16,7 +16,7 @@ import java.util.Map;
 
 public final class EventHandlerRegistrationUtils {
 
-    private static Logger log = LoggerFactory.getLogger(EventHandlerRegistrationUtils.class);
+    private static final Logger log = LoggerFactory.getLogger(EventHandlerRegistrationUtils.class);
 
     private EventHandlerRegistrationUtils() { }
 
@@ -31,7 +31,7 @@ public final class EventHandlerRegistrationUtils {
     public static <C extends Connector<T>, T extends ConnectorEvent> AbstractEventHandler<C> createEventHandler(C connector, Class<?> clazz, Map<String, String> params)
             throws InvocationTargetException, IllegalAccessException, InstantiationException {
         log.debug("creating eventhandler " + clazz);
-        Constructor<?> constructor =  ClassLoaderHelper.determineConstructorByNumOfArgs(clazz, 2);
+        Constructor<?> constructor =  ClassLoaderHelper.determineConstructorByArgumentTypes(clazz, new Class<?>[] { Connector.class, Map.class });
         if(constructor == null) {
             throw new IllegalArgumentException("can't find contstructor of class - " + clazz);
         }

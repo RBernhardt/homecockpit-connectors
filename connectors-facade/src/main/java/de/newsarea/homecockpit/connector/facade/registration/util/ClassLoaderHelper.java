@@ -17,7 +17,7 @@ public final class ClassLoaderHelper {
 	private static Logger log = LoggerFactory.getLogger(ClassLoaderHelper.class);
 
     private ClassLoaderHelper() { }
-	
+
 	public static Constructor<?> determineFirstConstructor(Class<?> clazz) {
 		try {
 			for(Constructor<?> constructor : clazz.getConstructors()) {
@@ -29,10 +29,10 @@ public final class ClassLoaderHelper {
 		return null;
 	}
 
-    public static Constructor<?> determineConstructorByNumOfArgs(Class<?> clazz, int numOfArgs) {
+    public static Constructor<?> determineConstructorByArgumentTypes(Class<?> clazz, Class<?>[] argumentTypes) {
         try {
             for(Constructor<?> constructor : clazz.getConstructors()) {
-                if(numOfArgs == constructor.getParameterTypes().length) {
+                if(isAssignableFrom(constructor, argumentTypes)) {
                     return constructor;
                 }
             }
@@ -40,6 +40,20 @@ public final class ClassLoaderHelper {
             log.error(e.getMessage(), e);
         }
         return null;
+    }
+
+    private static boolean isAssignableFrom(Constructor<?> constructor, Class<?>[] argumentTypes) {
+        Class<?>[] constructorArgTypes = constructor.getParameterTypes();
+        if(constructorArgTypes.length != argumentTypes.length) {
+            return false;
+        }
+        // ~
+        for(int i=0; i < argumentTypes.length; i++) {
+            if(!argumentTypes[i].isAssignableFrom(constructorArgTypes[i])) {
+                return false;
+            }
+        }
+        return true;
     }
 
 	public static List<Class<?>> determineClasses(String packageName) throws ClassNotFoundException, IOException {
@@ -53,12 +67,12 @@ public final class ClassLoaderHelper {
 			dirs.add(new File(resource.getFile().replaceAll("%20", " ")));
 		}
 		ArrayList<Class<?>> classes = new ArrayList<>();
-		for (File directory : dirs) {			
+		for (File directory : dirs) {
 			classes.addAll(findClasses(directory, packageName));
 		}
 		return classes;
 	}
-	
+
 	public static List<Class<?>> findClasses(File directory, String packageName) throws ClassNotFoundException {
         List<Class<?>> classes = new ArrayList<>();
         if (!directory.exists()) {
@@ -75,7 +89,7 @@ public final class ClassLoaderHelper {
         }
         return classes;
     }
-	
+
 	public static Method determineSetterMethod(Class<?> clazz, String name) {
 		for(Method method : clazz.getMethods()) {
 			if(method.getName().equalsIgnoreCase("set" + name)) {

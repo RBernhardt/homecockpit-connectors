@@ -15,7 +15,7 @@ import java.util.*;
 
 public class DefaultConnectorFacade implements ConnectorFacade {
 
-    private static Logger log = LoggerFactory.getLogger(DefaultConnectorFacade.class);
+    private static final Logger log = LoggerFactory.getLogger(DefaultConnectorFacade.class);
 
     private Map<Event, InboundEventHandler> inboundEventHandlers = new HashMap<>();
     private List<Event> outboundEvents = new ArrayList<>();
