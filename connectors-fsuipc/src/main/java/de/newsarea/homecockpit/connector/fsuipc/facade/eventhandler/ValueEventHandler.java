@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Map;
+import java.util.concurrent.TimeoutException;
 
 public class ValueEventHandler extends AbstractFSUIPCEventHandler implements InboundEventHandler, ConnectorEventHandler {
 
@@ -109,6 +110,17 @@ public class ValueEventHandler extends AbstractFSUIPCEventHandler implements Inb
             }
         }
         eventListeners.addListener(connectorEventHandlerListener);
+    }
+
+    @Override
+    public void queueLastEvent() {
+        try {
+            OffsetItem offsetItem = getConnector().read(new OffsetIdent(getOffset().getValue(), getSize()));
+            FSUIPCConnectorEvent fsuipcConnectorEvent = FSUIPCConnectorEvent.from(offsetItem);
+            handleConnectorEvent(fsuipcConnectorEvent);
+        } catch (TimeoutException e) {
+            log.error(e.getMessage(), e);
+        }
     }
 
     public static <I,O> ValueConverter<I, O> createValueConverterInstance(String valueConverter)

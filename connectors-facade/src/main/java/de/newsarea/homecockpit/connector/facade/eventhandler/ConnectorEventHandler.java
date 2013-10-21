@@ -6,4 +6,6 @@ public interface ConnectorEventHandler {
 
     void addConnectorEventHandlerListener(ConnectorEventHandlerListener<Object> connectorEventHandlerListener);
 
+    void queueLastEvent();
+
 }

@@ -23,4 +23,9 @@ public class TestEventHandler extends AbstractEventHandler implements InboundEve
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
+    @Override
+    public void queueLastEvent() {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
 }

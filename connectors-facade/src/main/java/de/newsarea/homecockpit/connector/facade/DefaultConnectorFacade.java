@@ -18,6 +18,7 @@ public class DefaultConnectorFacade implements ConnectorFacade {
     private static final Logger log = LoggerFactory.getLogger(DefaultConnectorFacade.class);
 
     private Map<Event, InboundEventHandler> inboundEventHandlers = new HashMap<>();
+    private Map<Event, ConnectorEventHandler> connectorEventHandlers = new HashMap<>();
     private List<Event> outboundEvents = new ArrayList<>();
 
     private List<OutboundEventListener> outboundEventListeners = new ArrayList<>();
@@ -30,7 +31,10 @@ public class DefaultConnectorFacade implements ConnectorFacade {
 
     @Override
     public void registerEventHandler(final String element, final String component, final String state, ConnectorEventHandler eventHandler) {
-        outboundEvents.add(new Event(element, component, state));
+        Event event = new Event(element, component, state);
+        outboundEvents.add(event);
+        connectorEventHandlers.put(event, eventHandler);
+        // ~
         eventHandler.addConnectorEventHandlerListener(new ConnectorEventHandlerListener<Object>() {
             @Override
             public void valueChanged(Object value) {
@@ -62,6 +66,13 @@ public class DefaultConnectorFacade implements ConnectorFacade {
         }
         inboundEventHandlers.get(event).handleInboundEvent(inboundEvent.getValue());
         return true;
+    }
+
+    @Override
+    public void queueLastEvents() {
+        for(ConnectorEventHandler connectorEventHandler : connectorEventHandlers.values()) {
+            connectorEventHandler.queueLastEvent();
+        }
     }
 
     @Override

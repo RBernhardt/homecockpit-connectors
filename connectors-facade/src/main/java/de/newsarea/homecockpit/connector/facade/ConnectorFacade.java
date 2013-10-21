@@ -23,4 +23,6 @@ public interface ConnectorFacade {
 
     Collection<Event> listRegisteredOutboundEvents();
 
+    void queueLastEvents();
+
 }

@@ -7,12 +7,14 @@ import de.newsarea.homecockpit.connector.fsuipc.FSUIPCConnector;
 import de.newsarea.homecockpit.connector.fsuipc.event.FSUIPCConnectorEvent;
 import de.newsarea.homecockpit.connector.fsuipc.facade.eventhandler.domain.FSUIPCOffset;
 import de.newsarea.homecockpit.fsuipc.domain.OffsetIdent;
+import de.newsarea.homecockpit.fsuipc.domain.OffsetItem;
 import org.apache.commons.lang3.event.EventListenerSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.AbstractMap;
 import java.util.Map;
+import java.util.concurrent.TimeoutException;
 
 public class ConnectorHighBitEventHandler extends AbstractFSUIPCEventHandler implements ConnectorEventHandler {
 	
@@ -85,6 +87,17 @@ public class ConnectorHighBitEventHandler extends AbstractFSUIPCEventHandler imp
             }
         }
         eventListeners.addListener(connectorEventHandlerListener);
+    }
+
+    @Override
+    public void queueLastEvent() {
+        try {
+            OffsetItem offsetItem = getConnector().read(new OffsetIdent(getOffset().getValue(), getSize()));
+            FSUIPCConnectorEvent fsuipcConnectorEvent = FSUIPCConnectorEvent.from(offsetItem);
+            handleConnectorEvent(fsuipcConnectorEvent);
+        } catch (TimeoutException e) {
+            log.error(e.getMessage(), e);
+        }
     }
 
 }
