@@ -21,7 +21,7 @@ abstract class AbstractEvent extends Event {
 
         AbstractEvent that = (AbstractEvent) o;
 
-        if (!value.equals(that.value)) return false;
+        if (value != null ? !value.equals(that.value) : that.value != null) return false;
 
         return true;
     }
@@ -29,8 +29,7 @@ abstract class AbstractEvent extends Event {
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + value.hashCode();
+        result = 31 * result + (value != null ? value.hashCode() : 0);
         return result;
     }
-
 }

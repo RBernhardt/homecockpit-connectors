@@ -33,7 +33,7 @@ public class Event {
 
         if (!component.equals(event.component)) return false;
         if (!element.equals(event.element)) return false;
-        if (!state.equals(event.state)) return false;
+        if (state != null ? !state.equals(event.state) : event.state != null) return false;
 
         return true;
     }
@@ -42,7 +42,7 @@ public class Event {
     public int hashCode() {
         int result = element.hashCode();
         result = 31 * result + component.hashCode();
-        result = 31 * result + state.hashCode();
+        result = 31 * result + (state != null ? state.hashCode() : 0);
         return result;
     }
 
