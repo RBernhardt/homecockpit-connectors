@@ -31,7 +31,7 @@ public class DefaultConnectorFacadeTest {
     public void shouldHandlePostEvent() throws Exception {
         InboundEventHandler inboundEventHandler = mock(InboundEventHandler.class);
         connectorFacade.registerEventHandler("ELEMENT", "COMPONENT", "STATE", inboundEventHandler);
-        // ~
+        // ~
         InboundEvent inboundEvent = new InboundEvent("ELEMENT", "COMPONENT", "STATE", 123456);
         assertTrue(connectorFacade.postEvent(inboundEvent));
         // ~

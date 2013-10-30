@@ -26,9 +26,9 @@ public class EventHandlerRegistrationUtilsTest {
         assertEquals("additionalValue", abstractEventHandler.getParameters().get("additionalKey"));
     }
 
-    public static class MockEventHandler <C> extends AbstractEventHandler<C> {
+    public static class MockEventHandler extends AbstractEventHandler<Connector> {
 
-        public MockEventHandler(C connector, Map<String, String> parameters) {
+        public MockEventHandler(Connector connector, Map<String, String> parameters) {
             super(connector, parameters);
         }
 
