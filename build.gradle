@@ -12,6 +12,9 @@ subprojects {
 
     test {
         useTestNG()
+        options {
+            useDefaultListeners = true
+        }
     }
 
     task javadocJar(type: Jar, dependsOn: javadoc) {
