@@ -73,8 +73,8 @@ public class ValueEventHandler extends AbstractFSUIPCEventHandler implements Inb
                 return;
             }
         }
-        // ~
-        eventListeners.fire().valueChanged(value);
+        //
+        eventListeners.fire().valueChanged(getValue() == null ? value : null);
 	}
 
     public void handleInboundEvent(Object value) {
