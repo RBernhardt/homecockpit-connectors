@@ -16,7 +16,12 @@ dependencies {
 uploadArchives {
     repositories {
         mavenDeployer {
-            snapshotRepository(url: snapshotRepositoryUrl);
+            pom {
+                project {
+                    name 'homecockpit-connectors-facade'
+                    description 'Java libraries to connect homecockpit hardware to a flight simulator software'
+                }
+            }
         }
     }
 }

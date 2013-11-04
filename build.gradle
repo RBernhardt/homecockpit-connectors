@@ -3,6 +3,7 @@ subprojects {
     apply plugin: 'java'
     apply plugin: 'maven'
     apply plugin: 'idea'
+    apply plugin: 'signing'
 
     group = 'de.newsarea.homecockpit'
     version = '0.9.0-SNAPSHOT'
@@ -35,7 +36,59 @@ subprojects {
 
     repositories {
         mavenCentral()
-        mavenRepo url: snapshotRepositoryUrl
+        maven {
+            url "https://oss.sonatype.org/content/repositories/snapshots/"
+        }
+    }
+
+    signing {
+        sign configurations.archives
+    }
+
+    uploadArchives {
+        repositories {
+            mavenDeployer {
+
+                beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+                snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+                    authentication(userName: sonatypeUsername, password: sonatypePassword)
+                }
+
+                repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                    authentication(userName: sonatypeUsername, password: sonatypePassword)
+                }
+
+                pom {
+                    project {
+                        packaging 'jar'
+                        url 'https://github.com/RBernhardt/homecockpit-connectors'
+
+                        scm {
+                            connection 'scm:git@github.com:RBernhardt/homecockpit-connectors.git'
+                            developerConnection 'scm:git@github.com:RBernhardt/homecockpit-connectors.git'
+                            url 'git@github.com:RBernhardt/homecockpit-connectors.git'
+                        }
+
+                        licenses {
+                            license {
+                                name 'The Apache Software License, Version 2.0'
+                                url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                                distribution 'repo'
+                            }
+                        }
+
+                        developers {
+                            developer {
+                                id 'bernhardt'
+                                name 'Robert Bernhardt'
+                            }
+                        }
+                    }
+                }
+
+            }
+        }
     }
 
 }

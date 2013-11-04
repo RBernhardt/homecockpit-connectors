@@ -9,3 +9,5 @@ dependencies {
     compile project(":connectors-fsuipc")
     compile "org.slf4j:slf4j-simple:1.7.5"
 }
+
+uploadArchives.enabled = false
