@@ -4,6 +4,8 @@ import de.newsarea.homecockpit.fsuipc.domain.ByteArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.nio.ByteBuffer;
+
 public class LeverValueConverter implements ValueConverter<ByteArray, Number> {
 	
 	private static Logger log = LoggerFactory.getLogger(LeverValueConverter.class);
@@ -19,7 +21,8 @@ public class LeverValueConverter implements ValueConverter<ByteArray, Number> {
 	public ByteArray toOutput(Number nbrValue) {
 		byte data = Byte.parseByte(nbrValue.toString());
         if (data < 0 || data > 100) { log.debug("invalid argument - {}", data); }
-        return ByteArray.create(Math.round(data / 100D * 16384D), 4);
+        short shortData = (short) Math.round(data / 100D * 16384D);
+        return ByteArray.create(ByteBuffer.allocate(2).putShort(shortData).array());
 	}
 
 }
