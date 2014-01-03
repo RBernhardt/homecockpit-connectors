@@ -7,12 +7,15 @@ import de.newsarea.homecockpit.fsuipc.domain.OffsetItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.util.AbstractMap;
 import java.util.Map;
 
 public class InboundKeyboardEventHandler extends AbstractFSUIPCEventHandler implements InboundEventHandler {
 
     private static final Logger log = LoggerFactory.getLogger(ValueWriterEventHandler.class);
+
+    public static Byte lastValue;
 
     public enum Key {
         NOTSET,
@@ -26,7 +29,7 @@ public class InboundKeyboardEventHandler extends AbstractFSUIPCEventHandler impl
 
     private Key getKey() {
         if(key == null) {
-            if(getParameters().containsKey(key)) {
+            if(getParameters().containsKey("key")) {
                 this.key = Key.valueOf(getParameterValue("key"));
             } else {
                 this.key = Key.NOTSET;
@@ -61,6 +64,17 @@ public class InboundKeyboardEventHandler extends AbstractFSUIPCEventHandler impl
         if(value != null) {
             log.warn("ignore inbound value - {}", value);
         }
+        //
+        try {
+            if(lastValue == getValue()) {
+                getConnector().write(new OffsetItem(getOffset().getValue(), getSize(), new byte[] { 0x00, 0x00 }));
+                Thread.sleep(300);
+            }
+        } catch (InterruptedException e) {
+            log.error(e.getMessage(), e);
+        } catch (IOException e) {
+            log.error(e.getMessage(), e);
+        }
         // determine key value
         byte keyValue = 0x00;
         switch(getKey()) {
@@ -78,6 +92,9 @@ public class InboundKeyboardEventHandler extends AbstractFSUIPCEventHandler impl
         byte[] keyboardByteArray = new byte[] { keyValue, getValue() };
         try {
             getConnector().write(new OffsetItem(getOffset().getValue(), getSize(), keyboardByteArray));
+            synchronized (InboundKeyboardEventHandler.class) {
+                lastValue = getValue();
+            }
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
