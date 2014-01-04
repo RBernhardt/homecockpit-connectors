@@ -40,7 +40,7 @@ public class InboundKeyboardEventHandler extends AbstractFSUIPCEventHandler impl
 
     private Byte getValue() {
         if(value == null) {
-            this.value = Byte.parseByte(getParameterValue("value"));
+            this.value = (byte)Integer.parseInt(getParameterValue("value"));
         }
         return value;
     }
