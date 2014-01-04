@@ -7,6 +7,7 @@ import de.newsarea.homecockpit.connector.facade.eventhandler.InboundEventHandler
 import de.newsarea.homecockpit.connector.fsuipc.FSUIPCConnector;
 import de.newsarea.homecockpit.connector.fsuipc.event.FSUIPCConnectorEvent;
 import de.newsarea.homecockpit.connector.fsuipc.facade.eventhandler.converter.ValueConverter;
+import de.newsarea.homecockpit.connector.fsuipc.facade.eventhandler.domain.FSUIPCOffset;
 import de.newsarea.homecockpit.fsuipc.domain.ByteArray;
 import de.newsarea.homecockpit.fsuipc.domain.OffsetIdent;
 import de.newsarea.homecockpit.fsuipc.domain.OffsetItem;
@@ -14,6 +15,7 @@ import org.apache.commons.lang3.event.EventListenerSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.AbstractMap;
 import java.util.Map;
 import java.util.concurrent.TimeoutException;
 
@@ -24,7 +26,7 @@ public class ValueEventHandler extends AbstractFSUIPCEventHandler implements Inb
     private EventListenerSupport<ConnectorEventHandlerListener> eventListeners;
 
     private ByteArray value;
-    private ValueConverter<ByteArray, Number> valueConverter;
+    private ValueConverter<Integer, Long> valueConverter;
 
     private ByteArray getValue() {
         if(value == null && getParameters().containsKey("value")) {
@@ -33,7 +35,7 @@ public class ValueEventHandler extends AbstractFSUIPCEventHandler implements Inb
         return value;
     }
 
-    public ValueConverter<ByteArray, Number> getValueConverter() {
+    public ValueConverter<Integer, Long> getValueConverter() {
         if (valueConverter == null && getParameters().containsKey("valueConverter")) {
             log.debug("loading value converter - " + valueConverter);
             try {
@@ -50,6 +52,25 @@ public class ValueEventHandler extends AbstractFSUIPCEventHandler implements Inb
         super(connector, parameters);
     }
 
+    public ValueEventHandler(FSUIPCConnector connector, FSUIPCOffset offset, int size) {
+        this(connector,
+                toParameters(
+                    new AbstractMap.SimpleEntry<>("offset", offset.toHexString()),
+                    new AbstractMap.SimpleEntry<>("size", String.valueOf(size))
+                )
+        );
+    }
+
+    public ValueEventHandler(FSUIPCConnector connector, FSUIPCOffset offset, int size, String valueConverter) {
+        this(connector,
+                toParameters(
+                    new AbstractMap.SimpleEntry<>("offset", offset.toHexString()),
+                    new AbstractMap.SimpleEntry<>("size", String.valueOf(size)),
+                    new AbstractMap.SimpleEntry<>("valueConverter", valueConverter)
+                )
+        );
+    }
+
 	public void handleConnectorEvent(FSUIPCConnectorEvent connectorEvent) {
         if(getOffset().getValue() != connectorEvent.getOffset()) { return; }
         if(getSize() != connectorEvent.getSize()) { return; }
@@ -58,7 +79,7 @@ public class ValueEventHandler extends AbstractFSUIPCEventHandler implements Inb
         if(getValueConverter() != null) {
             log.debug("convert value - " + connectorEvent + " - with " + getValueConverter());
             try {
-                value = getValueConverter().toInput(connectorEvent.getValue());
+                value = getValueConverter().toInput(connectorEvent.getValue().toInt());
             } catch(Exception ex) {
                 log.error("converter error with event - {}", connectorEvent);
                 throw ex;
@@ -80,14 +101,15 @@ public class ValueEventHandler extends AbstractFSUIPCEventHandler implements Inb
     public void handleInboundEvent(Object value) {
         ByteArray outputValue = getValue();
         if(outputValue == null && value != null) {
-            outputValue = ByteArray.create(value.toString(), getSize());
+            outputValue = ByteArray.create(value.toString(), 8);
             if(getValueConverter() != null) {
-                outputValue = getValueConverter().toOutput(outputValue.toNumber(getSize()));
-                // trim to output size
-                if(outputValue.getSize() != getSize()) {
-                    outputValue = ByteArray.create(outputValue.toBigInteger(), getSize());
-                }
+                Integer convertedValue = getValueConverter().toOutput(outputValue.toLong());
+                outputValue = ByteArray.create(convertedValue.toString(), getSize());
             }
+        }
+        // validate output value
+        if(outputValue == null) {
+            throw new IllegalArgumentException("defined value or event value expected");
         }
         //
         try {
