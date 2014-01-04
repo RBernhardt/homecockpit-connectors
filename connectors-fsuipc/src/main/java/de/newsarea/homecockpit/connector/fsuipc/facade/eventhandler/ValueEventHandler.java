@@ -81,8 +81,8 @@ public class ValueEventHandler extends AbstractFSUIPCEventHandler implements Inb
         ByteArray outputValue = getValue();
         if(outputValue == null && value != null) {
             outputValue = ByteArray.create(value.toString(), getSize());
-            if(valueConverter != null) {
-                outputValue = valueConverter.toOutput(outputValue.toNumber(getSize()));
+            if(getValueConverter() != null) {
+                outputValue = getValueConverter().toOutput(outputValue.toNumber(getSize()));
             }
         }
         //
