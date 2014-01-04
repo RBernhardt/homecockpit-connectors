@@ -26,7 +26,7 @@ public class ValueEventHandler extends AbstractFSUIPCEventHandler implements Inb
     private EventListenerSupport<ConnectorEventHandlerListener> eventListeners;
 
     private ByteArray value;
-    private ValueConverter<Integer, Long> valueConverter;
+    private ValueConverter<Long, Number> valueConverter;
 
     private ByteArray getValue() {
         if(value == null && getParameters().containsKey("value")) {
@@ -35,7 +35,7 @@ public class ValueEventHandler extends AbstractFSUIPCEventHandler implements Inb
         return value;
     }
 
-    public ValueConverter<Integer, Long> getValueConverter() {
+    public ValueConverter<Long, Number> getValueConverter() {
         if (valueConverter == null && getParameters().containsKey("valueConverter")) {
             log.debug("loading value converter - " + valueConverter);
             try {
@@ -79,7 +79,7 @@ public class ValueEventHandler extends AbstractFSUIPCEventHandler implements Inb
         if(getValueConverter() != null) {
             log.debug("convert value - " + connectorEvent + " - with " + getValueConverter());
             try {
-                value = getValueConverter().toInput(connectorEvent.getValue().toInt());
+                value = getValueConverter().toInput(connectorEvent.getValue().toLong());
             } catch(Exception ex) {
                 log.error("converter error with event - {}", connectorEvent);
                 throw ex;
@@ -101,9 +101,11 @@ public class ValueEventHandler extends AbstractFSUIPCEventHandler implements Inb
     public void handleInboundEvent(Object value) {
         ByteArray outputValue = getValue();
         if(outputValue == null && value != null) {
-            outputValue = ByteArray.create(value.toString(), 8);
-            if(getValueConverter() != null) {
-                Integer convertedValue = getValueConverter().toOutput(outputValue.toLong());
+            if(getValueConverter() == null) {
+                outputValue = ByteArray.create(value.toString(), getSize());
+            } else {
+                outputValue = ByteArray.create(value.toString(), 8);
+                Long convertedValue = getValueConverter().toOutput(outputValue.toLong());
                 outputValue = ByteArray.create(convertedValue.toString(), getSize());
             }
         }
@@ -113,7 +115,9 @@ public class ValueEventHandler extends AbstractFSUIPCEventHandler implements Inb
         }
         //
         try {
-            getConnector().write(new OffsetItem(getOffset().getValue(), getSize(), outputValue));
+            OffsetItem offsetItem = new OffsetItem(getOffset().getValue(), getSize(), outputValue);
+            log.info("SEND {}", offsetItem);
+            getConnector().write(offsetItem);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }

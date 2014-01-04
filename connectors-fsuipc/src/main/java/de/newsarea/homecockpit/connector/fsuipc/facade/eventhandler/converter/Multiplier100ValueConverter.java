@@ -1,15 +1,15 @@
 package de.newsarea.homecockpit.connector.fsuipc.facade.eventhandler.converter;
 
-public class Multiplier100ValueConverter implements ValueConverter<Integer, Long> {
+public class Multiplier100ValueConverter implements ValueConverter<Long, Long> {
 
 	@Override
-	public Long toInput(Integer data) {
-        return Long.valueOf(data * 100);
+	public Long toInput(Long data) {
+        return data * 100;
 	}
 
 	@Override
-	public Integer toOutput(Long data) {
-        return data.intValue() / 100;
+	public Long toOutput(Long data) {
+        return data / 100;
 	}
 
 }

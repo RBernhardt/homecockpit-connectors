@@ -1,19 +1,18 @@
 package de.newsarea.homecockpit.connector.fsuipc.facade.eventhandler.converter;
 
 
-import de.newsarea.homecockpit.fsuipc.domain.ByteArray;
+import com.google.common.primitives.Ints;
 
-public class Divider128ValueConverter implements ValueConverter<ByteArray, Integer> {
-
-	@Override
-	public Integer toInput(ByteArray data) {
-		Integer nbr = (Integer) data.toNumber(4);
-		return (int)(nbr / 128D);
-	}
+public class Divider128ValueConverter implements ValueConverter<Long, Integer> {
 
 	@Override
-	public ByteArray toOutput(Integer data) {
-        return ByteArray.create(data * 128D, 4);
+	public Integer toInput(Long data) {
+		return Ints.checkedCast(Math.round(data / 128D));
+    }
+
+	@Override
+	public Long toOutput(Integer data) {
+        return Math.round(data * 128D);
 	}
 
 }

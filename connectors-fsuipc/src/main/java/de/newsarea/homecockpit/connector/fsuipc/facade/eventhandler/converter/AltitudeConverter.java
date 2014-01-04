@@ -1,18 +1,17 @@
 package de.newsarea.homecockpit.connector.fsuipc.facade.eventhandler.converter;
 
-import de.newsarea.homecockpit.fsuipc.domain.ByteArray;
 import de.newsarea.homecockpit.fsuipc.util.FSUIPCUtil;
 
-public class AltitudeConverter implements ValueConverter<ByteArray, Double> {
+public class AltitudeConverter implements ValueConverter<Long, Double> {
 	
 	@Override
-	public Double toInput(ByteArray data) {
-		return FSUIPCUtil.toAlititude(data.toLong());
+	public Double toInput(Long data) {
+		return FSUIPCUtil.toAlititude(data);
 	}
 
 	@Override
-	public ByteArray toOutput(Double data) {
-        return ByteArray.create(FSUIPCUtil.toFSUIPCAlititude(data), 8);
+	public Long toOutput(Double data) {
+        return FSUIPCUtil.toFSUIPCAlititude(data);
 	}
 
 }

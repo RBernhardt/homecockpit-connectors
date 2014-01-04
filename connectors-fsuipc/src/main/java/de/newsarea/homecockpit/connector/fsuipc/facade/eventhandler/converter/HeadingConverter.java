@@ -1,18 +1,18 @@
 package de.newsarea.homecockpit.connector.fsuipc.facade.eventhandler.converter;
 
-import de.newsarea.homecockpit.fsuipc.domain.ByteArray;
+import com.google.common.primitives.Ints;
 import de.newsarea.homecockpit.fsuipc.util.FSUIPCUtil;
 
-public class HeadingConverter implements ValueConverter<ByteArray, Double> {
+public class HeadingConverter implements ValueConverter<Long, Double> {
 
 	@Override
-	public Double toInput(ByteArray data) {
-		return FSUIPCUtil.toHeading(data.toInt());
+	public Double toInput(Long data) {
+		return FSUIPCUtil.toHeading(Ints.checkedCast(data));
 	}
 
 	@Override
-	public ByteArray toOutput(Double data) {
-        return ByteArray.create(FSUIPCUtil.toFSUIPCHeading(data), 4);
+	public Long toOutput(Double data) {
+        return Long.valueOf(FSUIPCUtil.toFSUIPCHeading(data));
 	}
 
 }

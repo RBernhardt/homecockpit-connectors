@@ -9,9 +9,9 @@ public class LeverValueConverterTest {
     private LeverValueConverter leverValueConverter = new LeverValueConverter();
 
     @Test
-    public void shouldReturnCorrectByteArray() throws Exception {
-        assertEquals("0x4000", leverValueConverter.toOutput(100).toHexString());
-        assertEquals("0x0000", leverValueConverter.toOutput(0).toHexString());
+    public void shouldReturnResult() throws Exception {
+        assertEquals(16384L, (long)leverValueConverter.toOutput(100L));
+        assertEquals(0L, (long)leverValueConverter.toOutput(0L));
 
     }
 }
