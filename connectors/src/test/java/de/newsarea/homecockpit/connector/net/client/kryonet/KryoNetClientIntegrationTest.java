@@ -17,7 +17,7 @@ import static org.testng.AssertJUnit.*;
 public class KryoNetClientIntegrationTest {
 
     private Server server;
-    private List<String> receivedValues = new ArrayList<String>();
+    private List<String> receivedValues = new ArrayList<>();
 
     @BeforeClass
     public void beforeClass() throws IOException {
