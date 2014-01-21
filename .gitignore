@@ -11,3 +11,4 @@ build
 .gradle
 .idea
 *.log
+.DS_Store
