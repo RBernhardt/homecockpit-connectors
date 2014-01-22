@@ -1,7 +1,10 @@
 package de.newsarea.homecockpit.connector;
 
+import com.codahale.metrics.Gauge;
+import com.codahale.metrics.MetricRegistry;
 import de.newsarea.homecockpit.connector.event.ConnectorEvent;
 import de.newsarea.homecockpit.connector.event.ValueChangedEventListener;
+import de.newsarea.homecockpit.connector.util.Metrics;
 import org.apache.commons.lang3.event.EventListenerSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +26,15 @@ public abstract class AbstractConnector<E extends ConnectorEvent> implements Con
     protected AbstractConnector(GeneralConnector generalConnector) {
         this.eventListeners = EventListenerSupport.create(ValueChangedEventListener.class);
         this.queue = new LinkedBlockingQueue<>();
+        // monitor queue size
+        Metrics.getInstance().register(MetricRegistry.name(this.getClass(), "queue", "size"),
+            new Gauge<Integer>() {
+                @Override
+                public Integer getValue() {
+                    return queue.size();
+                }
+            }
+        );
         // ~
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         executorService.execute(new Runnable() {
