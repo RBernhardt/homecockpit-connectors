@@ -3,7 +3,6 @@ archivesBaseName = 'connectors-api'
 dependencies {
     compile "org.slf4j:slf4j-api:1.7.5"
     compile "org.apache.commons:commons-lang3:3.1"
-    compile "com.codahale.metrics:metrics-core:3.0.1"
     // ~
     testCompile "org.slf4j:slf4j-simple:1.7.5"
     testCompile "org.springframework:spring-test:3.1.1.RELEASE"
