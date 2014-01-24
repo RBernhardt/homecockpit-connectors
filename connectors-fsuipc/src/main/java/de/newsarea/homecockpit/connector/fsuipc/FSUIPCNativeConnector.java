@@ -10,6 +10,7 @@ import org.apache.commons.lang3.event.EventListenerSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.net.ConnectException;
 
 public class FSUIPCNativeConnector implements FSUIPCConnector {
@@ -49,6 +50,11 @@ public class FSUIPCNativeConnector implements FSUIPCConnector {
 
     public void write(OffsetItem offsetItem) {
         fsuipcInterface.write(offsetItem);
+    }
+
+    @Override
+    public void toggleBit(int offset, int size, byte bitIdx) throws IOException {
+        fsuipcInterface.toggleBit(offset, size, bitIdx);
     }
 
     public OffsetItem read(OffsetIdent offsetIdent) {

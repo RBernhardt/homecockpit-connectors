@@ -26,6 +26,7 @@ public class FSUIPCGeneralConnector extends AbstractConnector<FSUIPCConnectorEve
         WRITE,
         READ,
         CHANGED,
+        TOGGLE,
         VALUE
     }
 
@@ -108,6 +109,14 @@ public class FSUIPCGeneralConnector extends AbstractConnector<FSUIPCConnectorEve
 
     public void write(OffsetItem offsetItem) throws IOException {
         write(new OffsetItem[]{offsetItem});
+    }
+
+    @Override
+    public void toggleBit(int offset, int size, byte bitIdx) throws IOException {
+        StringBuilder writeMessage = new StringBuilder();
+        writeMessage.append(MessageType.TOGGLE.toString());
+        writeMessage.append(toString(new OffsetItem[] { new OffsetItem(offset, size, new byte[] { bitIdx } )}));
+        generalConnector.write(writeMessage.toString());
     }
 
     @Override

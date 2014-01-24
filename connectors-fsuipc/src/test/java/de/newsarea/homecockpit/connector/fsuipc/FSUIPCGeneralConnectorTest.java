@@ -82,6 +82,14 @@ public class FSUIPCGeneralConnectorTest {
         assertEquals("0x0002 : 2 : 0x0001", offsetItems.get(0).toString());
     }
 
+    @Test
+    public void shouldSendToggleBitMessage() throws Exception {
+        // when
+        fsuipcConnector.toggleBit(0x0001, 1, (byte) 1);
+        // then
+        verify(generalConnector).write("TOGGLE[[0x0001:1:0x01]]");
+    }
+
     @Test(expectedExceptions = TimeoutException.class)
     public void shouldThrowReadTimeout() throws Exception {
         fsuipcConnector.read(new OffsetIdent(0x0002, 2));
