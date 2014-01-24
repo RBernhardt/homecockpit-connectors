@@ -90,6 +90,14 @@ public class FSUIPCGeneralConnectorTest {
         verify(generalConnector).write("TOGGLE[[0x0001:1:0x01]]");
     }
 
+    @Test
+    public void shouldSendToggleBitMessageForBitIdx10() throws Exception {
+        // when
+        fsuipcConnector.toggleBit(0x0001, 1, (byte) 10);
+        // then
+        verify(generalConnector).write("TOGGLE[[0x0001:1:0x0A]]");
+    }
+
     @Test(expectedExceptions = TimeoutException.class)
     public void shouldThrowReadTimeout() throws Exception {
         fsuipcConnector.read(new OffsetIdent(0x0002, 2));
