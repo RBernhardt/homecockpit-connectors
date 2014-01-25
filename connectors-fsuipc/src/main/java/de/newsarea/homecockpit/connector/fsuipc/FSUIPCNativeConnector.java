@@ -10,9 +10,7 @@ import org.apache.commons.lang3.event.EventListenerSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.net.ConnectException;
-import java.util.concurrent.TimeoutException;
 
 public class FSUIPCNativeConnector implements FSUIPCConnector {
 
@@ -54,15 +52,6 @@ public class FSUIPCNativeConnector implements FSUIPCConnector {
     @Override
     public void write(OffsetItem offsetItem) {
         fsuipcInterface.write(offsetItem);
-    }
-
-    @Override
-    public void writeAndWait(OffsetItem offsetItem) throws IOException {
-        try {
-            fsuipcInterface.writeAndWaitForResetToZero(offsetItem);
-        } catch (TimeoutException e) {
-            log.error(e.getMessage(), e);
-        }
     }
 
     @Override

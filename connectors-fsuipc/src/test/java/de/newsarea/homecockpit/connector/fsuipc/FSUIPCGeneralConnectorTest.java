@@ -2,7 +2,6 @@ package de.newsarea.homecockpit.connector.fsuipc;
 
 import de.newsarea.homecockpit.connector.GeneralConnector;
 import de.newsarea.homecockpit.connector.event.ValueChangedEventListener;
-import de.newsarea.homecockpit.fsuipc.domain.ByteArray;
 import de.newsarea.homecockpit.fsuipc.domain.OffsetIdent;
 import de.newsarea.homecockpit.fsuipc.domain.OffsetItem;
 import org.mockito.invocation.InvocationOnMock;
@@ -81,14 +80,6 @@ public class FSUIPCGeneralConnectorTest {
         Thread.sleep(100);
         assertEquals(1, offsetItems.size());
         assertEquals("0x0002 : 2 : 0x0001", offsetItems.get(0).toString());
-    }
-
-    @Test
-    public void shouldSendWriteAndWaitMessage() throws Exception {
-        // when
-        fsuipcConnector.writeAndWait(new OffsetItem(0x0001, 2, ByteArray.create("100", 2)));
-        // then
-        verify(generalConnector).write("WRITEANDWAIT[[0x0001:2:0x0064]]");
     }
 
     @Test(expectedExceptions = TimeoutException.class)

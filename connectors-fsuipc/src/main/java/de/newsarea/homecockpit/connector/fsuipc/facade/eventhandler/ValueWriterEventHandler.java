@@ -16,7 +16,6 @@ public class ValueWriterEventHandler extends AbstractFSUIPCEventHandler implemen
     private static final Logger log = LoggerFactory.getLogger(ValueWriterEventHandler.class);
 
     private ByteArray value;
-    private Boolean waitForResetToZero;
 
     private ByteArray getValue() {
         if(value == null) {
@@ -25,27 +24,15 @@ public class ValueWriterEventHandler extends AbstractFSUIPCEventHandler implemen
         return value;
     }
 
-    private boolean isWaitForResetToZero() {
-        if(waitForResetToZero == null) {
-            if(getParameters().containsKey("waitForResetToZero")) {
-                this.waitForResetToZero = Boolean.valueOf(getParameterValue("waitForResetToZero"));
-            } else {
-                this.waitForResetToZero = false;
-            }
-        }
-        return waitForResetToZero;
-    }
-
     public ValueWriterEventHandler(FSUIPCConnector connector, Map<String, String> parameters) {
         super(connector, parameters);
     }
 
-    public ValueWriterEventHandler(FSUIPCConnector connector, FSUIPCOffset offset, int size, boolean waitForResetToZero) {
+    public ValueWriterEventHandler(FSUIPCConnector connector, FSUIPCOffset offset, int size) {
         this(connector,
             toParameters(
                 new AbstractMap.SimpleEntry<>("offset", offset.toHexString()),
-                new AbstractMap.SimpleEntry<>("size", String.valueOf(size)),
-                new AbstractMap.SimpleEntry<>("waitForResetToZero", String.valueOf(waitForResetToZero))
+                new AbstractMap.SimpleEntry<>("size", String.valueOf(size))
             )
         );
     }
@@ -57,11 +44,7 @@ public class ValueWriterEventHandler extends AbstractFSUIPCEventHandler implemen
         //
         OffsetItem item = new OffsetItem(getOffset().getValue(), getSize(), getValue());
         try {
-            if(isWaitForResetToZero()) {
-                getConnector().writeAndWait(item);
-            } else {
-                getConnector().write(item);
-            }
+            getConnector().write(item);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }

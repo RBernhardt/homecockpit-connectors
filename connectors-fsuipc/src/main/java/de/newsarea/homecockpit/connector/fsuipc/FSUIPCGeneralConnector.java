@@ -116,14 +116,6 @@ public class FSUIPCGeneralConnector extends AbstractConnector<FSUIPCConnectorEve
     }
 
     @Override
-    public void writeAndWait(OffsetItem offsetItem) throws IOException {
-        StringBuilder writeMessage = new StringBuilder();
-        writeMessage.append(MessageType.WRITEANDWAIT.toString());
-        writeMessage.append(toString(offsetItem));
-        generalConnector.write(writeMessage.toString());
-    }
-
-    @Override
     public String toString() {
         return "FSUIPCGeneralConnector{" +
                 "receivedValues=" + receivedValues +
