@@ -26,7 +26,6 @@ public class FSUIPCGeneralConnector extends AbstractConnector<FSUIPCConnectorEve
         WRITE,
         READ,
         CHANGED,
-        WRITEANDWAIT,
         VALUE
     }
 
