@@ -26,7 +26,7 @@ public class FSUIPCGeneralConnector extends AbstractConnector<FSUIPCConnectorEve
         WRITE,
         READ,
         CHANGED,
-        TOGGLE,
+        WRITEANDWAIT,
         VALUE
     }
 
@@ -69,6 +69,7 @@ public class FSUIPCGeneralConnector extends AbstractConnector<FSUIPCConnectorEve
         }
     }
 
+    @Override
     public void monitor(OffsetIdent offsetIdent) throws IOException {
         StringBuilder monitorMessage = new StringBuilder();
         monitorMessage.append(MessageType.MONITOR.toString());
@@ -76,6 +77,7 @@ public class FSUIPCGeneralConnector extends AbstractConnector<FSUIPCConnectorEve
         generalConnector.write(monitorMessage.toString());
     }
 
+    @Override
     public OffsetItem read(OffsetIdent offsetIdent) throws TimeoutException {
         try {
             StringBuilder monitorMessage = new StringBuilder();
@@ -100,6 +102,7 @@ public class FSUIPCGeneralConnector extends AbstractConnector<FSUIPCConnectorEve
         throw new TimeoutException();
     }
 
+    @Override
     public void write(OffsetItem[] offsetItems) throws IOException {
         StringBuilder writeMessage = new StringBuilder();
         writeMessage.append(MessageType.WRITE.toString());
@@ -107,15 +110,16 @@ public class FSUIPCGeneralConnector extends AbstractConnector<FSUIPCConnectorEve
         generalConnector.write(writeMessage.toString());
     }
 
+    @Override
     public void write(OffsetItem offsetItem) throws IOException {
         write(new OffsetItem[]{offsetItem});
     }
 
     @Override
-    public void toggleBit(int offset, int size, byte bitIdx) throws IOException {
+    public void writeAndWait(OffsetItem offsetItem) throws IOException {
         StringBuilder writeMessage = new StringBuilder();
-        writeMessage.append(MessageType.TOGGLE.toString());
-        writeMessage.append(toString(new OffsetItem[] { new OffsetItem(offset, size, new byte[] { bitIdx } )}));
+        writeMessage.append(MessageType.WRITEANDWAIT.toString());
+        writeMessage.append(toString(offsetItem));
         generalConnector.write(writeMessage.toString());
     }
 
@@ -151,6 +155,10 @@ public class FSUIPCGeneralConnector extends AbstractConnector<FSUIPCConnectorEve
         }
         strBld.append("]");
         return strBld.toString();
+    }
+
+    private static String toString(OffsetItem offsetItem) {
+        return toString(new OffsetItem[] { offsetItem });
     }
 
     private static String toString(OffsetItem[] offsetItems) {

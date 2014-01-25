@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.ConnectException;
+import java.util.concurrent.TimeoutException;
 
 public class FSUIPCNativeConnector implements FSUIPCConnector {
 
@@ -40,23 +41,31 @@ public class FSUIPCNativeConnector implements FSUIPCConnector {
         fsuipcInterface.open();
     }
 
+    @Override
     public void monitor(OffsetIdent offsetIdent) {
         fsuipcInterface.monitor(offsetIdent);
     }
 
+    @Override
     public void write(OffsetItem[] offsetItems) {
         fsuipcInterface.write(offsetItems);
     }
 
+    @Override
     public void write(OffsetItem offsetItem) {
         fsuipcInterface.write(offsetItem);
     }
 
     @Override
-    public void toggleBit(int offset, int size, byte bitIdx) throws IOException {
-        fsuipcInterface.toggleBit(offset, size, bitIdx);
+    public void writeAndWait(OffsetItem offsetItem) throws IOException {
+        try {
+            fsuipcInterface.writeAndWaitForResetToZero(offsetItem);
+        } catch (TimeoutException e) {
+            log.error(e.getMessage(), e);
+        }
     }
 
+    @Override
     public OffsetItem read(OffsetIdent offsetIdent) {
         return fsuipcInterface.read(offsetIdent);
     }

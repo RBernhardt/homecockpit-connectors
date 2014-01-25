@@ -8,6 +8,11 @@ subprojects {
     group = 'de.newsarea.homecockpit'
     version = '0.9.0-SNAPSHOT'
 
+    configurations.all {
+        // check for updates every build
+        resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+    }
+
     sourceCompatibility = 1.7
     targetCompatibility = 1.7
 
