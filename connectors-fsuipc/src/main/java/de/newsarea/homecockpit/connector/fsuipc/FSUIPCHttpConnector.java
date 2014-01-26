@@ -30,6 +30,8 @@ import java.net.ConnectException;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.URISyntaxException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -39,7 +41,7 @@ public class FSUIPCHttpConnector implements FSUIPCConnector {
 
     private static Logger log = LoggerFactory.getLogger(FSUIPCNativeConnector.class);
 
-    private HttpClient client;
+    private HttpClient httpClient;
     private HttpHost httpHost;
     private int socketPort;
     private Socket socket;
@@ -48,15 +50,28 @@ public class FSUIPCHttpConnector implements FSUIPCConnector {
 
     private boolean closed = true;
     private ExecutorService executorService;
+    private Gson gson;
+    private Map<String, Integer> timeOfBlockingList;
 
-    private Gson gson = new Gson();
+    public Map<String, Integer> getTimeOfBlockingList() {
+        return timeOfBlockingList;
+    }
+
+    public void setTimeOfBlockingList(Map<String, Integer> timeOfBlockingList) {
+        if(timeOfBlockingList == null) {
+            throw new IllegalArgumentException("timeOfBlockingList must be not null");
+        }
+        this.timeOfBlockingList = timeOfBlockingList;
+    }
 
     public FSUIPCHttpConnector(String host, int httpPort, int socketPort) {
-        this.client = HttpClientBuilder.create().build();
+        this.httpClient = HttpClientBuilder.create().build();
         this.httpHost = new HttpHost(host, httpPort);
         this.socketPort = socketPort;
         // ~
         this.eventListeners = EventListenerSupport.create(ValueChangedEventListener.class);
+        this.gson = new Gson();
+        this.timeOfBlockingList = new HashMap<>();
     }
 
     @Override
@@ -74,7 +89,7 @@ public class FSUIPCHttpConnector implements FSUIPCConnector {
             dataEntity.setContentType("application/x-www-form-urlencoded");
             httpPost.setEntity(dataEntity);
             // ~
-            HttpResponse response = client.execute(httpHost, httpPost);
+            HttpResponse response = httpClient.execute(httpHost, httpPost);
             String responseAsString = responseToString(response);
             if(response.getStatusLine().getStatusCode() != 200) {
                 throw new IOException(responseAsString);
@@ -94,9 +109,16 @@ public class FSUIPCHttpConnector implements FSUIPCConnector {
     }
 
     @Override
-    public void write(OffsetItem offsetItem, int timeOfBlocking) throws IOException {
+    public void write(OffsetItem offsetItem) throws IOException {
         try {
-            URIBuilder uriBuilder = new URIBuilder("/offsets/" + offsetToHexString(offsetItem.getOffset()));
+            String offsetHexString = offsetToHexString(offsetItem.getOffset());
+            // determine timeOfBlocking
+            int timeOfBlocking = 0;
+            if(timeOfBlockingList.containsKey(offsetHexString)) {
+                timeOfBlocking = timeOfBlockingList.get(offsetHexString);
+            }
+            // ~
+            URIBuilder uriBuilder = new URIBuilder("/offsets/" + offsetHexString);
             StringBuilder data = new StringBuilder();
             data.append("data=").append(offsetItem.getValue().toHexString());
             data.append("&");
@@ -108,7 +130,7 @@ public class FSUIPCHttpConnector implements FSUIPCConnector {
             dataEntity.setContentType("application/x-www-form-urlencoded");
             httpPost.setEntity(dataEntity);
             // ~
-            HttpResponse response = client.execute(httpHost, httpPost);
+            HttpResponse response = httpClient.execute(httpHost, httpPost);
             String responseAsString = responseToString(response);
             if(response.getStatusLine().getStatusCode() != 200) {
                 throw new IOException(responseAsString);
@@ -123,17 +145,12 @@ public class FSUIPCHttpConnector implements FSUIPCConnector {
     }
 
     @Override
-    public void write(OffsetItem offsetItem) throws IOException {
-        write(offsetItem, 0);
-    }
-
-    @Override
     public OffsetItem read(OffsetIdent offsetIdent) throws TimeoutException {
         try {
             URIBuilder uriBuilder = new URIBuilder("/offsets/" + offsetToHexString(offsetIdent.getOffset()));
             uriBuilder.addParameter("size", String.valueOf(offsetIdent.getSize()));
             log.info("excute - {}", uriBuilder.toString());
-            HttpResponse response = client.execute(httpHost, new HttpGet(uriBuilder.build()));
+            HttpResponse response = httpClient.execute(httpHost, new HttpGet(uriBuilder.build()));
             String responseAsString = responseToString(response);
             if(response.getStatusLine().getStatusCode() != 200) {
                 throw new IOException(responseAsString);

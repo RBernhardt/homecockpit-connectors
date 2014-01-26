@@ -43,9 +43,9 @@ public class FSUIPCHttpConnectorIntegrationTest {
 
     @Test(enabled = false)
     public void shouldWriteData() throws Exception {
-        fsuipcHttpConnector.write(new OffsetItem(0x04F4, 2, ByteArray.create("1", 2)), 200);
-        fsuipcHttpConnector.write(new OffsetItem(0x04F4, 2, ByteArray.create("2", 2)), 200);
-        fsuipcHttpConnector.write(new OffsetItem(0x04F4, 2, ByteArray.create("3", 2)), 200);
+        fsuipcHttpConnector.write(new OffsetItem(0x04F4, 2, ByteArray.create("1", 2)));
+        fsuipcHttpConnector.write(new OffsetItem(0x04F4, 2, ByteArray.create("2", 2)));
+        fsuipcHttpConnector.write(new OffsetItem(0x04F4, 2, ByteArray.create("3", 2)));
     }
 
     @Test(enabled = false)
