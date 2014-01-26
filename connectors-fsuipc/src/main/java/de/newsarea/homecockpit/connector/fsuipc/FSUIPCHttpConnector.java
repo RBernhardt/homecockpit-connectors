@@ -82,7 +82,7 @@ public class FSUIPCHttpConnector implements FSUIPCConnector {
             data.append("offset=").append(offsetToHexString(offsetIdent.getOffset()));
             data.append("&");
             data.append("size=").append(offsetIdent.getSize());
-            log.info("excute - {} with {}", uriBuilder.toString(), data);
+            log.info("excute - POST {} with {}", uriBuilder.toString(), data);
             // create method with entity
             HttpPost httpPost = new HttpPost(uriBuilder.build());
             StringEntity dataEntity = new StringEntity(data.toString());
@@ -123,7 +123,7 @@ public class FSUIPCHttpConnector implements FSUIPCConnector {
             data.append("data=").append(offsetItem.getValue().toHexString());
             data.append("&");
             data.append("timeOfBlocking=").append(timeOfBlocking);
-            log.info("excute - {} with {}", uriBuilder.toString(), data);
+            log.info("excute - POST {} with {}", uriBuilder.toString(), data);
             // create method with entity
             HttpPost httpPost = new HttpPost(uriBuilder.build());
             StringEntity dataEntity = new StringEntity(data.toString());
@@ -149,7 +149,7 @@ public class FSUIPCHttpConnector implements FSUIPCConnector {
         try {
             URIBuilder uriBuilder = new URIBuilder("/offsets/" + offsetToHexString(offsetIdent.getOffset()));
             uriBuilder.addParameter("size", String.valueOf(offsetIdent.getSize()));
-            log.info("excute - {}", uriBuilder.toString());
+            log.info("excute - GET {}", uriBuilder.toString());
             HttpResponse response = httpClient.execute(httpHost, new HttpGet(uriBuilder.build()));
             String responseAsString = responseToString(response);
             if(response.getStatusLine().getStatusCode() != 200) {
@@ -210,7 +210,7 @@ public class FSUIPCHttpConnector implements FSUIPCConnector {
             JsonObject jsonObject = jsonArray.get(i).getAsJsonObject();
             String offsetString = jsonObject.get("offset").getAsString();
             offsetString = offsetString.replaceAll("0x", "");
-            int offset = Integer.parseInt(offsetString);
+            int offset = Integer.parseInt(offsetString, 16);
             int size = Integer.parseInt(jsonObject.get("size").getAsString());
             ByteArray data = ByteArray.create(jsonObject.get("data").getAsString());
             // ~
