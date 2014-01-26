@@ -50,6 +50,8 @@ public class ValueEventHandler extends AbstractFSUIPCEventHandler implements Inb
 
     public ValueEventHandler(FSUIPCConnector connector, Map<String, String> parameters) {
         super(connector, parameters);
+        // ~
+        eventListeners = EventListenerSupport.create(ConnectorEventHandlerListener.class);
     }
 
     public ValueEventHandler(FSUIPCConnector connector, FSUIPCOffset offset, int size) {
@@ -125,8 +127,7 @@ public class ValueEventHandler extends AbstractFSUIPCEventHandler implements Inb
 
     @Override
     public void addConnectorEventHandlerListener(ConnectorEventHandlerListener<Object> connectorEventHandlerListener) {
-        if(eventListeners == null) {
-            eventListeners = EventListenerSupport.create(ConnectorEventHandlerListener.class);
+        if(eventListeners.getListeners().length == 0) {
             try {
                 getConnector().monitor(new OffsetIdent(getOffset().getValue(), getSize()));
                 getConnector().addEventListener(new ValueChangedEventListener<FSUIPCConnectorEvent>() {

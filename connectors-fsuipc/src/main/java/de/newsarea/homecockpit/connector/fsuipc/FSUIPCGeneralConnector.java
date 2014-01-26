@@ -115,6 +115,11 @@ public class FSUIPCGeneralConnector extends AbstractConnector<FSUIPCConnectorEve
     }
 
     @Override
+    public void write(OffsetItem offsetItem, int timeOfBlocking) throws IOException {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public String toString() {
         return "FSUIPCGeneralConnector{" +
                 "receivedValues=" + receivedValues +
