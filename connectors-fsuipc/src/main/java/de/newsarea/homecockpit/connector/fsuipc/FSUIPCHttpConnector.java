@@ -234,7 +234,7 @@ public class FSUIPCHttpConnector implements FSUIPCConnector {
                 log.error(e.getMessage(), e);
             }
         }
-        // shutdown excutor service
+        // shutdown executor service
         executorService.shutdown();
         try {
             executorService.awaitTermination(5, TimeUnit.SECONDS);
