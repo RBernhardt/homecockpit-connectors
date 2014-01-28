@@ -102,16 +102,11 @@ public class FSUIPCGeneralConnector extends AbstractConnector<FSUIPCConnectorEve
     }
 
     @Override
-    public void write(OffsetItem[] offsetItems) throws IOException {
+    public void write(OffsetItem offsetItem) throws IOException {
         StringBuilder writeMessage = new StringBuilder();
         writeMessage.append(MessageType.WRITE.toString());
-        writeMessage.append(toString(offsetItems));
+        writeMessage.append(toString(new OffsetItem[]{offsetItem}));
         generalConnector.write(writeMessage.toString());
-    }
-
-    @Override
-    public void write(OffsetItem offsetItem) throws IOException {
-        write(new OffsetItem[]{offsetItem});
     }
 
     @Override

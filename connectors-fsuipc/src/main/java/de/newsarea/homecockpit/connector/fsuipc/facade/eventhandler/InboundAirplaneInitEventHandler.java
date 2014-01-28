@@ -55,7 +55,40 @@ public class InboundAirplaneInitEventHandler extends AbstractEventHandler<FSUIPC
         offsetItemList.add(new OffsetItem(0x0580, 4, ByteArray.create((int)FSUIPCUtil.toFSUIPCDegree(airplanePosition.getHeading()), 4)));
         //
         OffsetItem[] offsetItems = offsetItemList.toArray(new OffsetItem[offsetItemList.size()]);
-        getConnector().write(offsetItems);
+
+        int firstOffset = offsetItems[0].getOffset();
+        ByteArray byteArray = ByteArray.create(createByteArray(offsetItems));
+        // ~
+        OffsetItem offsetItem = new OffsetItem(firstOffset, byteArray.getSize(), byteArray);
+        getConnector().write(offsetItem);
+    }
+
+	/* HELPER */
+
+
+
+    private byte[] createByteArray(OffsetItem[] offsetItems) {
+        int currentOffset = offsetItems[0].getOffset();
+        OffsetItem lastOffsetItem  = offsetItems[offsetItems.length - 1];
+        int lastOffset = lastOffsetItem.getOffset() + lastOffsetItem.getSize();
+        //
+        byte[] output = new byte[lastOffset - currentOffset];
+        for(OffsetItem offsetItem : offsetItems) {
+            if(offsetItem.getOffset() != currentOffset) {
+                throw new IllegalArgumentException("expected offset was " + currentOffset + " but was " + offsetItem.getOffset());
+            }
+            //
+            for(int j=0; j < offsetItem.getValue().getSize(); j++) {
+                int lOffset = lastOffset - currentOffset - offsetItem.getSize();
+                if(lOffset < 0) {
+                    throw new IllegalArgumentException("invalid first or last offset item detected - " + offsetItems[0].getOffset() + " : " + lastOffset + " : " + output.length);
+                }
+                output[lOffset + j] = offsetItem.getValue().get(j);
+            }
+            //
+            currentOffset += offsetItem.getSize();
+        }
+        return output;
     }
 
 }

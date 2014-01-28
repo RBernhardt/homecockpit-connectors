@@ -4,13 +4,13 @@ import de.newsarea.homecockpit.connector.fsuipc.FSUIPCConnector;
 import de.newsarea.homecockpit.connector.fsuipc.facade.eventhandler.domain.AirplanePosition;
 import de.newsarea.homecockpit.fsuipc.domain.ByteArray;
 import de.newsarea.homecockpit.fsuipc.domain.OffsetItem;
-import org.mockito.AdditionalMatchers;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -39,7 +39,7 @@ public class InboundAirplaneInitEventHandlerTest {
         offsetItemList.add(new OffsetItem(0x0580, 4, ByteArray.create(0x093E9423, 4))); // heading
         // ~
         OffsetItem[] offsetItems = offsetItemList.toArray(new OffsetItem[offsetItemList.size()]);
-        verify(fsuipcConnector).write(AdditionalMatchers.aryEq(offsetItems));
+        verify(fsuipcConnector).write(eq(new OffsetItem(0x0558, 44, ByteArray.create("0x093E9423088888BE07D27D5900000003067E98FF072EA61D950C84000010F5098E38E38E000000000000000E"))));
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)

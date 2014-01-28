@@ -45,11 +45,6 @@ public class FSUIPCNativeConnector implements FSUIPCConnector {
     }
 
     @Override
-    public void write(OffsetItem[] offsetItems) {
-        fsuipcInterface.write(offsetItems);
-    }
-
-    @Override
     public void write(OffsetItem offsetItem) {
         fsuipcInterface.write(offsetItem);
     }

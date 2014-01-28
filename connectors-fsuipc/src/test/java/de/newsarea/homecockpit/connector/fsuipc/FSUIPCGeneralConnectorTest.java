@@ -46,9 +46,8 @@ public class FSUIPCGeneralConnectorTest {
 	@Test
 	public void shouldWrite() throws IOException {
 		fsuipcConnector.write(new OffsetItem(1, 2, new byte[] { 4 }));
-        verify(generalConnector).write(eq("WRITE[[0x0001:2:0x04]]"));
-        fsuipcConnector.write(new OffsetItem[] { new OffsetItem(1, 2, new byte[] { 4 }), new OffsetItem(2, 4, new byte[] { 5 }) });
-        verify(generalConnector).write(eq("WRITE[[0x0001:2:0x04][0x0002:4:0x05]]"));
+        fsuipcConnector.write(new OffsetItem(1, 2, new byte[] { 4 }));
+        verify(generalConnector, times(2)).write(eq("WRITE[[0x0001:2:0x04]]"));
 	}
 
     @Test

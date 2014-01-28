@@ -104,11 +104,6 @@ public class FSUIPCHttpConnector implements FSUIPCConnector {
     }
 
     @Override
-    public void write(OffsetItem[] offsetItems) throws IOException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
     public void write(OffsetItem offsetItem) throws IOException {
         try {
             String offsetHexString = offsetToHexString(offsetItem.getOffset());

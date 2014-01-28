@@ -12,7 +12,6 @@ public interface FSUIPCConnector extends Connector<FSUIPCConnectorEvent> {
 
     void monitor(OffsetIdent offsetIdent) throws IOException;
 
-    void write(OffsetItem[] offsetItems) throws IOException;
     void write(OffsetItem offsetItem) throws IOException;
 
     OffsetItem read(OffsetIdent offsetIdent) throws TimeoutException;
