@@ -1,4 +1,4 @@
-archivesBaseName = 'connectors-iocard_usbkeys'
+archivesBaseName = 'connectors-iocard'
 
 dependencies {
     compile "de.newsarea.homecockpit:connectors-facade:0.9.0-SNAPSHOT"
@@ -16,7 +16,7 @@ uploadArchives {
         mavenDeployer {
             pom {
                 project {
-                    name 'homecockpit-connectors-iocard_usbkeys'
+                    name 'homecockpit-connectors-iocard'
                     description 'Java libraries to connect homecockpit hardware to a flight simulator software'
                 }
             }
