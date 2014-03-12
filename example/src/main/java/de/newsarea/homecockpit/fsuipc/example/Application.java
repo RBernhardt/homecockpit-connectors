@@ -5,8 +5,7 @@ import de.newsarea.homecockpit.connector.facade.ConnectorFacade;
 import de.newsarea.homecockpit.connector.facade.DefaultConnectorFacade;
 import de.newsarea.homecockpit.connector.facade.registration.XmlEventHandlerRegistrationService;
 import de.newsarea.homecockpit.connector.fsuipc.FSUIPCConnector;
-import de.newsarea.homecockpit.connector.fsuipc.FSUIPCGeneralConnector;
-import de.newsarea.homecockpit.connector.net.NetGeneralConnector;
+import de.newsarea.homecockpit.connector.fsuipc.FSUIPCHttpConnector;
 import de.newsarea.homecockpit.connector.util.ConnectorConnectionHelper;
 
 import java.awt.event.WindowAdapter;
@@ -20,7 +19,7 @@ public class Application {
     private FSUIPCSwingUI fsuipcSwingUI;
 
     public static void main(String[] args) throws InterruptedException, ConnectException {
-        FSUIPCConnector fsuipcConnector = new FSUIPCGeneralConnector(new NetGeneralConnector("drevil", 4020));
+        FSUIPCConnector fsuipcConnector = new FSUIPCHttpConnector("simulator", 8080, 8081);
         // ~
         Application app = new Application();
         app.run(fsuipcConnector);

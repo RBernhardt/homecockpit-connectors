@@ -10,10 +10,12 @@ import java.util.concurrent.TimeoutException;
 
 public interface FSUIPCConnector extends Connector<FSUIPCConnectorEvent> {
 
+    boolean isConnectionEstablished();
+
     void monitor(OffsetIdent offsetIdent) throws IOException;
 
     void write(OffsetItem offsetItem) throws IOException;
 
-    OffsetItem read(OffsetIdent offsetIdent) throws TimeoutException;
+    OffsetItem read(OffsetIdent offsetIdent) throws IOException;
 
 }

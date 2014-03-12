@@ -8,6 +8,7 @@ import de.newsarea.homecockpit.connector.fsuipc.event.FSUIPCConnectorEvent;
 import de.newsarea.homecockpit.fsuipc.domain.ByteArray;
 import de.newsarea.homecockpit.fsuipc.domain.OffsetIdent;
 import de.newsarea.homecockpit.fsuipc.domain.OffsetItem;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.event.EventListenerSupport;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
@@ -16,6 +17,7 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -35,7 +37,6 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 public class FSUIPCHttpConnector implements FSUIPCConnector {
 
@@ -75,6 +76,34 @@ public class FSUIPCHttpConnector implements FSUIPCConnector {
     }
 
     @Override
+    public boolean isConnectionEstablished() {
+        try {
+            URIBuilder uriBuilder = new URIBuilder("/status");
+            log.info("excute - GET {}", uriBuilder.toString());
+            HttpResponse response = httpClient.execute(httpHost, new HttpGet(uriBuilder.build()));
+            String responseAsString = responseToString(response);
+            int status = response.getStatusLine().getStatusCode();
+            if(response.getStatusLine().getStatusCode() != 200) {
+                StringBuilder msg = new StringBuilder();
+                msg.append(status);
+                if(StringUtils.isNotEmpty(responseAsString)) {
+                    msg.append(" - ").append(responseAsString);
+                }
+                throw new IOException(msg.toString());
+            }
+            // @TODO HACK es sollte nur der Wert überprüft werden
+            return responseAsString.equalsIgnoreCase("status=OK");
+        } catch (URISyntaxException e) {
+            log.error(e.getMessage(), e);
+        } catch (ClientProtocolException e) {
+            log.error(e.getMessage(), e);
+        } catch (IOException e) {
+            log.error(e.getMessage(), e);
+        }
+        return false;
+    }
+
+    @Override
     public void monitor(OffsetIdent offsetIdent) throws IOException {
         try {
             URIBuilder uriBuilder = new URIBuilder("/monitor/");
@@ -91,14 +120,18 @@ public class FSUIPCHttpConnector implements FSUIPCConnector {
             // ~
             HttpResponse response = httpClient.execute(httpHost, httpPost);
             String responseAsString = responseToString(response);
-            if(response.getStatusLine().getStatusCode() != 200) {
-                throw new IOException(responseAsString);
+            int status = response.getStatusLine().getStatusCode();
+            if(status != 200) {
+                StringBuilder msg = new StringBuilder();
+                msg.append(status);
+                if(StringUtils.isNotEmpty(responseAsString)) {
+                    msg.append(" - ").append(responseAsString);
+                }
+                throw new IOException(msg.toString());
             }
         } catch (URISyntaxException e) {
             log.error(e.getMessage(), e);
         } catch (ClientProtocolException e) {
-            log.error(e.getMessage(), e);
-        } catch (IOException e) {
             log.error(e.getMessage(), e);
         }
     }
@@ -118,37 +151,47 @@ public class FSUIPCHttpConnector implements FSUIPCConnector {
             data.append("data=").append(offsetItem.getValue().toHexString());
             data.append("&");
             data.append("timeOfBlocking=").append(timeOfBlocking);
-            log.info("excute - POST {} with {}", uriBuilder.toString(), data);
+            log.info("excute - PUT {} with {}", uriBuilder.toString(), data);
             // create method with entity
-            HttpPost httpPost = new HttpPost(uriBuilder.build());
+            HttpPut httpPut = new HttpPut(uriBuilder.build());
             StringEntity dataEntity = new StringEntity(data.toString());
             dataEntity.setContentType("application/x-www-form-urlencoded");
-            httpPost.setEntity(dataEntity);
+            httpPut.setEntity(dataEntity);
             // ~
-            HttpResponse response = httpClient.execute(httpHost, httpPost);
+            HttpResponse response = httpClient.execute(httpHost, httpPut);
             String responseAsString = responseToString(response);
+            int status = response.getStatusLine().getStatusCode();
             if(response.getStatusLine().getStatusCode() != 200) {
-                throw new IOException(responseAsString);
+                StringBuilder msg = new StringBuilder();
+                msg.append(status);
+                if(StringUtils.isNotEmpty(responseAsString)) {
+                    msg.append(" - ").append(responseAsString);
+                }
+                throw new IOException(msg.toString());
             }
         } catch (URISyntaxException e) {
             log.error(e.getMessage(), e);
         } catch (ClientProtocolException e) {
             log.error(e.getMessage(), e);
-        } catch (IOException e) {
-            log.error(e.getMessage(), e);
         }
     }
 
     @Override
-    public OffsetItem read(OffsetIdent offsetIdent) throws TimeoutException {
+    public OffsetItem read(OffsetIdent offsetIdent) throws IOException {
         try {
             URIBuilder uriBuilder = new URIBuilder("/offsets/" + offsetToHexString(offsetIdent.getOffset()));
             uriBuilder.addParameter("size", String.valueOf(offsetIdent.getSize()));
             log.info("excute - GET {}", uriBuilder.toString());
             HttpResponse response = httpClient.execute(httpHost, new HttpGet(uriBuilder.build()));
             String responseAsString = responseToString(response);
+            int status = response.getStatusLine().getStatusCode();
             if(response.getStatusLine().getStatusCode() != 200) {
-                throw new IOException(responseAsString);
+                StringBuilder msg = new StringBuilder();
+                msg.append(status);
+                if(StringUtils.isNotEmpty(responseAsString)) {
+                    msg.append(" - ").append(responseAsString);
+                }
+                throw new IOException(msg.toString());
             }
             // ~
             ByteArray data = ByteArray.create(responseAsString);
@@ -156,8 +199,6 @@ public class FSUIPCHttpConnector implements FSUIPCConnector {
         } catch (URISyntaxException e) {
             log.error(e.getMessage(), e);
         } catch (ClientProtocolException e) {
-            log.error(e.getMessage(), e);
-        } catch (IOException e) {
             log.error(e.getMessage(), e);
         }
         return null;

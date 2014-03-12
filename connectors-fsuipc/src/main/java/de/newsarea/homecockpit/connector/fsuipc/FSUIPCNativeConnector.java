@@ -10,6 +10,7 @@ import org.apache.commons.lang3.event.EventListenerSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.net.ConnectException;
 
 public class FSUIPCNativeConnector implements FSUIPCConnector {
@@ -35,8 +36,14 @@ public class FSUIPCNativeConnector implements FSUIPCConnector {
         });
     }
 
+    @Override
     public void open() throws ConnectException {
         fsuipcInterface.open();
+    }
+
+    @Override
+    public boolean isConnectionEstablished() {
+        return fsuipcInterface.isConnectionEstablished();
     }
 
     @Override
@@ -45,12 +52,12 @@ public class FSUIPCNativeConnector implements FSUIPCConnector {
     }
 
     @Override
-    public void write(OffsetItem offsetItem) {
+    public void write(OffsetItem offsetItem) throws IOException {
         fsuipcInterface.write(offsetItem);
     }
 
     @Override
-    public OffsetItem read(OffsetIdent offsetIdent) {
+    public OffsetItem read(OffsetIdent offsetIdent) throws IOException {
         return fsuipcInterface.read(offsetIdent);
     }
 

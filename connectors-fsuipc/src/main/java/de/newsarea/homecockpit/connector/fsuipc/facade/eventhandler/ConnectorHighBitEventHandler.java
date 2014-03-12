@@ -12,6 +12,7 @@ import org.apache.commons.lang3.event.EventListenerSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.util.AbstractMap;
 import java.util.Map;
 import java.util.concurrent.TimeoutException;
@@ -95,7 +96,7 @@ public class ConnectorHighBitEventHandler extends AbstractFSUIPCEventHandler imp
             OffsetItem offsetItem = getConnector().read(new OffsetIdent(getOffset().getValue(), getSize()));
             FSUIPCConnectorEvent fsuipcConnectorEvent = FSUIPCConnectorEvent.from(offsetItem);
             handleConnectorEvent(fsuipcConnectorEvent);
-        } catch (TimeoutException e) {
+        } catch (IOException e) {
             log.error(e.getMessage(), e);
         }
     }

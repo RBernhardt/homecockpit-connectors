@@ -1,24 +1,19 @@
 package de.newsarea.homecockpit.connector.fsuipc.facade.eventhandler;
 
-import de.newsarea.homecockpit.connector.GeneralConnector;
 import de.newsarea.homecockpit.connector.fsuipc.FSUIPCConnector;
-import de.newsarea.homecockpit.connector.fsuipc.FSUIPCGeneralConnector;
+import de.newsarea.homecockpit.connector.fsuipc.FSUIPCHttpConnector;
 import de.newsarea.homecockpit.connector.fsuipc.facade.eventhandler.domain.FSUIPCOffset;
-import de.newsarea.homecockpit.connector.net.NetGeneralConnector;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 public class InboundKeyboardEventHandlerIntegrationTest {
 
-    private GeneralConnector generalConnector;
     private FSUIPCConnector fsuipcConnector;
 
     @BeforeMethod
     public void setUp() throws Exception {
-        generalConnector = new NetGeneralConnector("drevil", 4020);
-        // ~
-        fsuipcConnector = new FSUIPCGeneralConnector(generalConnector);
+        fsuipcConnector = new FSUIPCHttpConnector("simulator", 8080, 8081);
         fsuipcConnector.open();
     }
 
