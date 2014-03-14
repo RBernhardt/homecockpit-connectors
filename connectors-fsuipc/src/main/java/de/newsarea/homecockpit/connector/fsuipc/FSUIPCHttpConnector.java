@@ -40,7 +40,7 @@ import java.util.concurrent.TimeUnit;
 
 public class FSUIPCHttpConnector implements FSUIPCConnector {
 
-    private static Logger log = LoggerFactory.getLogger(FSUIPCNativeConnector.class);
+    private static Logger log = LoggerFactory.getLogger(FSUIPCHttpConnector.class);
 
     private HttpClient httpClient;
     private HttpHost httpHost;
