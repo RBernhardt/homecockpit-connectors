@@ -70,4 +70,32 @@ public class FSUIPCNativeConnector implements FSUIPCConnector {
         fsuipcInterface.close();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof FSUIPCNativeConnector)) return false;
+
+        FSUIPCNativeConnector that = (FSUIPCNativeConnector) o;
+
+        if (!eventListeners.equals(that.eventListeners)) return false;
+        if (!fsuipcInterface.equals(that.fsuipcInterface)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = eventListeners.hashCode();
+        result = 31 * result + fsuipcInterface.hashCode();
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "FSUIPCNativeConnector{" +
+                "eventListeners=" + eventListeners +
+                ", fsuipcInterface=" + fsuipcInterface +
+                "}";
+    }
+
 }

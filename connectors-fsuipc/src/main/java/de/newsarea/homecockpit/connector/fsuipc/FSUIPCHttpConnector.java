@@ -279,6 +279,58 @@ public class FSUIPCHttpConnector implements FSUIPCConnector {
         }
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof FSUIPCHttpConnector)) return false;
+
+        FSUIPCHttpConnector that = (FSUIPCHttpConnector) o;
+
+        if (closed != that.closed) return false;
+        if (socketPort != that.socketPort) return false;
+        if (eventListeners != null ? !eventListeners.equals(that.eventListeners) : that.eventListeners != null)
+            return false;
+        if (executorService != null ? !executorService.equals(that.executorService) : that.executorService != null)
+            return false;
+        if (gson != null ? !gson.equals(that.gson) : that.gson != null) return false;
+        if (httpClient != null ? !httpClient.equals(that.httpClient) : that.httpClient != null) return false;
+        if (httpHost != null ? !httpHost.equals(that.httpHost) : that.httpHost != null) return false;
+        if (socket != null ? !socket.equals(that.socket) : that.socket != null) return false;
+        if (timeOfBlockingList != null ? !timeOfBlockingList.equals(that.timeOfBlockingList) : that.timeOfBlockingList != null)
+            return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = httpClient != null ? httpClient.hashCode() : 0;
+        result = 31 * result + (httpHost != null ? httpHost.hashCode() : 0);
+        result = 31 * result + socketPort;
+        result = 31 * result + (socket != null ? socket.hashCode() : 0);
+        result = 31 * result + (eventListeners != null ? eventListeners.hashCode() : 0);
+        result = 31 * result + (closed ? 1 : 0);
+        result = 31 * result + (executorService != null ? executorService.hashCode() : 0);
+        result = 31 * result + (gson != null ? gson.hashCode() : 0);
+        result = 31 * result + (timeOfBlockingList != null ? timeOfBlockingList.hashCode() : 0);
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "FSUIPCHttpConnector{" +
+                "httpClient=" + httpClient +
+                ", httpHost=" + httpHost +
+                ", socketPort=" + socketPort +
+                ", socket=" + socket +
+                ", eventListeners=" + eventListeners +
+                ", closed=" + closed +
+                ", executorService=" + executorService +
+                ", gson=" + gson +
+                ", timeOfBlockingList=" + timeOfBlockingList +
+                "}";
+    }
+
     /* HELPER */
 
     private String responseToString(HttpResponse httpResponse) throws IOException {
