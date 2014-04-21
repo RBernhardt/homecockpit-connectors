@@ -77,6 +77,10 @@ public class FSUIPCHttpConnector implements FSUIPCConnector {
 
     @Override
     public boolean isConnectionEstablished() {
+        if(closed) {
+            return false;
+        }
+        //
         try {
             URIBuilder uriBuilder = new URIBuilder("/status");
             log.info("excute - GET {}", uriBuilder.toString());
