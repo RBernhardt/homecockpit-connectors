@@ -92,7 +92,7 @@ public class FSUIPCHttpConnector implements FSUIPCConnector {
                 throw new IOException(msg.toString());
             }
             // @TODO HACK es sollte nur der Wert überprüft werden
-            return responseAsString.equalsIgnoreCase("status=OK");
+            return responseAsString.equalsIgnoreCase("status=OPEN");
         } catch (URISyntaxException e) {
             log.error(e.getMessage(), e);
         } catch (ClientProtocolException e) {
